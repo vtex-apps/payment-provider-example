@@ -1,18 +1,20 @@
 import { json as requestParser } from 'co-body'
-import { Context } from '..'
+
 import {
   AvailablePaymentsResponse,
   InboundRequest,
-  PaymentAuthorizationRequest,
-  PaymentAuthorizationResponse,
-  PaymentCancelationResponse,
-  PaymentCancellationRequest,
+  AuthorizationRequest,
+  AuthorizationResponse,
+  CancellationResponse,
+  CancellationRequest,
   PaymentMethod,
-  PaymentRefundRequest,
-  PaymentRefundResponse,
-  PaymentSettlementRequest,
-  PaymentSettlementResponse,
+  RefundRequest,
+  RefundResponse,
+  SettlementRequest,
+  SettlementResponse,
 } from '../types'
+
+import { Context } from '..'
 
 export async function cancellations(
   ctx: Context,
@@ -20,8 +22,8 @@ export async function cancellations(
 ) {
   const { transactionId, paymentId, requestId } = (await requestParser(
     ctx.req
-  )) as PaymentCancellationRequest
-  const cancellationResponse: PaymentCancelationResponse = {
+  )) as CancellationRequest
+  const cancellationResponse: CancellationResponse = {
     cancellationId: 'connector-example-cancellationId',
     code: undefined,
     message: 'connector cancellation',
@@ -51,10 +53,8 @@ export async function authorizations(
   ctx: Context,
   next: () => Promise<unknown>
 ) {
-  const { paymentId } = (await requestParser(
-    ctx.req
-  )) as PaymentAuthorizationRequest
-  const authorizationResponse: PaymentAuthorizationResponse = {
+  const { paymentId } = (await requestParser(ctx.req)) as AuthorizationRequest
+  const authorizationResponse: AuthorizationResponse = {
     authorizationId: 'connector-example-authorizationId',
     code: undefined,
     message: 'successfully cancelled',
@@ -73,8 +73,8 @@ export async function authorizations(
 export async function settlements(ctx: Context, next: () => Promise<unknown>) {
   const { paymentId, value, requestId } = (await requestParser(
     ctx.req
-  )) as PaymentSettlementRequest
-  const settlementResponse: PaymentSettlementResponse = {
+  )) as SettlementRequest
+  const settlementResponse: SettlementResponse = {
     settleId: 'connector-example-settleId',
     code: undefined,
     message: 'successfully cancelled',
@@ -90,8 +90,8 @@ export async function settlements(ctx: Context, next: () => Promise<unknown>) {
 export async function refunds(ctx: Context, next: () => Promise<unknown>) {
   const { paymentId, requestId, value } = (await requestParser(
     ctx.req
-  )) as PaymentRefundRequest
-  const refundResponse: PaymentRefundResponse = {
+  )) as RefundRequest
+  const refundResponse: RefundResponse = {
     refundId: 'connector-example-refundId',
     code: undefined,
     message: 'successfully cancelled',

@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "co-body": "^6.0.0",
-    "ramda": "^0.27.0"
+    "ramda": "^0.27.0",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@types/co-body": "^0.0.3",

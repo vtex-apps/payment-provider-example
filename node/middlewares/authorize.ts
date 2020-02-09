@@ -1,5 +1,6 @@
-import { Context } from '..'
 import { InvalidAppKeyAndAppTokenError } from './errors'
+
+import { Context } from '..'
 
 export const VTEX_PROVIDER_KEY = 'x-provider-api-appkey'
 export const VTEX_PROVIDER_TOKEN = 'x-provider-api-apptoken'

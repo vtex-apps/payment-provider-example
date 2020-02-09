@@ -7,6 +7,6 @@ export const withProxyAuthorization = (
   ...options,
   headers: {
     'Proxy-Authorization': context.authToken,
-    ...((options && options.headers) || {}),
+    ...(options?.headers ?? {}),
   },
 })

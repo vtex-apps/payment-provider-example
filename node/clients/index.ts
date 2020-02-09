@@ -1,4 +1,5 @@
 import { IOClients } from '@vtex/api'
+
 import PaymentProvider from './paymentProvider'
 
 // Extend the default IOClients implementation with our own custom clients.

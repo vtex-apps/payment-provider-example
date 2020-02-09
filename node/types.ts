@@ -143,23 +143,23 @@ export interface AvailablePaymentsResponse {
   paymentMethods: PaymentMethod[]
 }
 
-export interface PaymentCancellationRequest extends PaymentOperationRequest {
+export interface CancellationRequest extends PaymentRequest {
   authorizationId: string
 }
 
-export interface PaymentCancelationResponse extends PaymentOperationRequest {
+export interface CancellationResponse extends PaymentRequest {
   cancellationId: Maybe<string>
   code: Maybe<'cancel-manually'>
   message: Maybe<string>
 }
 
-export interface PaymentOperationRequest {
+export interface PaymentRequest {
   transactionId: string
   paymentId: string
   requestId: string
 }
 
-export interface Authorization extends PaymentOperationRequest {
+export interface Authorization extends PaymentRequest {
   reference: string
   orderId: string
   paymentMethod: PaymentMethod
@@ -198,7 +198,7 @@ export interface BankInvoiceAuthorization extends Authorization {
   paymentMethod: BankInvoice
 }
 
-export type PaymentAuthorizationRequest =
+export type AuthorizationRequest =
   | CreditCardAuthorization
   | DebitCardAuthorization
   | AdhocCardAuthorization
@@ -206,26 +206,26 @@ export type PaymentAuthorizationRequest =
   | Authorization
 
 export const isBankInvoiceAuthorization = (
-  authorization: PaymentAuthorizationRequest
+  authorization: AuthorizationRequest
 ): authorization is CardAuthorization =>
   authorization.paymentMethod.toString() === 'BankInvoice'
 
 type AuthorizationStatus = 'approved' | 'denied' | 'undefined'
 
-export interface PaymentOperationResponse {
+export interface PaymentResponse {
   paymentId: string
   code: Maybe<string>
   message: Maybe<string>
 }
 
-export interface PaymentAuthorization extends PaymentOperationResponse {
+export interface AuthorizedResponse extends PaymentResponse {
   status: AuthorizationStatus
   tid: Maybe<string>
   acquirer: Maybe<string>
   paymentAppData: Maybe<AppData>
 }
 
-export interface ApprovedAuthorization extends PaymentAuthorization {
+export interface ApprovedAuthorization extends AuthorizedResponse {
   tid: string
   authorizationId: string
   nsu: string
@@ -245,53 +245,53 @@ export interface BankInvoiceAuthorized extends ApprovedAuthorization {
   delayToCancel: Maybe<number>
 }
 
-export interface FailedAuthorization extends PaymentAuthorization {
+export interface FailedAuthorization extends AuthorizedResponse {
   status: 'denied'
 }
 
-export interface UndefinedAuthorization extends PaymentAuthorization {
+export interface UndefinedAuthorization extends AuthorizedResponse {
   status: 'undefined'
   delayToCancel: number
 }
 
-export type PaymentAuthorizationResponse =
+export type AuthorizationResponse =
   | ApprovedAuthorization
   | CreditCardAuthorized
   | BankInvoiceAuthorized
   | FailedAuthorization
   | UndefinedAuthorization
 
-export interface PaymentSettlementRequest extends PaymentOperationRequest {
+export interface SettlementRequest extends PaymentRequest {
   value: number
   authorizationId: string
   recipients: Maybe<Recipient[]>
 }
 
-export interface PaymentSettlementResponse extends PaymentOperationResponse {
+export interface SettlementResponse extends PaymentResponse {
   settleId: Maybe<string>
   value: number
   requestId: string
 }
 
-export interface PaymentRefundRequest extends PaymentOperationRequest {
+export interface RefundRequest extends PaymentRequest {
   value: number
   settleId: string
   recipients: Maybe<Recipient[]>
 }
 
-export interface PaymentRefundResponse extends PaymentOperationResponse {
+export interface RefundResponse extends PaymentResponse {
   requestId: string
   refundId: Maybe<string>
   value: number
 }
 
-export interface InboundRequest extends PaymentOperationRequest {
+export interface InboundRequest extends PaymentRequest {
   authorizationId: string
   tid: string
   requestData: { body: string }
 }
 
-export interface InboundResponse extends PaymentOperationResponse {
+export interface InboundResponse extends PaymentResponse {
   responseData: {
     statusCode: number
     contentType: string
