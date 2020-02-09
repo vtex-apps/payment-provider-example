@@ -1,29 +1,24 @@
-import { json as requestParser } from 'co-body'
+import { Context } from '@vtex/api'
 
+import { Clients } from '../clients'
+import { ConnectorContext } from '../service'
 import {
-  AvailablePaymentsResponse,
-  InboundRequest,
   AuthorizationRequest,
   AuthorizationResponse,
-  CancellationResponse,
   CancellationRequest,
+  CancellationResponse,
+  InboundRequest,
   PaymentMethod,
   RefundRequest,
-  RefundResponse,
   SettlementRequest,
-  SettlementResponse,
+  InboundResponse,
+  RefundResponse,
 } from '../types'
 
-import { Context } from '..'
-
-export async function cancellations(
-  ctx: Context,
-  next: () => Promise<unknown>
-) {
-  const { transactionId, paymentId, requestId } = (await requestParser(
-    ctx.req
-  )) as CancellationRequest
-  const cancellationResponse: CancellationResponse = {
+export function cancel({
+  connector: { transactionId, paymentId, requestId },
+}: ConnectorContext<CancellationRequest, Clients>): CancellationResponse {
+  return {
     cancellationId: 'connector-example-cancellationId',
     code: undefined,
     message: 'connector cancellation',
@@ -31,30 +26,19 @@ export async function cancellations(
     paymentId,
     requestId,
   }
-  ctx.body = cancellationResponse
-  ctx.status = 200
-  await next()
 }
 
-export async function paymentMethods(
-  ctx: Context,
-  next: () => Promise<unknown>
-) {
+export function paymentMethods(_: Context<Clients>) {
   const availablePaymentMethods: PaymentMethod[] = []
-  const response: AvailablePaymentsResponse = {
+  return {
     paymentMethods: availablePaymentMethods,
   }
-  ctx.body = response
-  ctx.status = 200
-  await next()
 }
 
-export async function authorizations(
-  ctx: Context,
-  next: () => Promise<unknown>
-) {
-  const { paymentId } = (await requestParser(ctx.req)) as AuthorizationRequest
-  const authorizationResponse: AuthorizationResponse = {
+export function authorize({
+  connector: { paymentId },
+}: ConnectorContext<AuthorizationRequest, Clients>): AuthorizationResponse {
+  return {
     authorizationId: 'connector-example-authorizationId',
     code: undefined,
     message: 'successfully cancelled',
@@ -65,16 +49,16 @@ export async function authorizations(
     acquirer: undefined,
     paymentAppData: undefined,
   }
-  ctx.body = authorizationResponse
-  ctx.status = 200
-  await next()
 }
 
-export async function settlements(ctx: Context, next: () => Promise<unknown>) {
-  const { paymentId, value, requestId } = (await requestParser(
-    ctx.req
-  )) as SettlementRequest
-  const settlementResponse: SettlementResponse = {
+export function settle({
+  connector: {
+    paymentId,
+    requestId,
+    content: { value },
+  },
+}: ConnectorContext<SettlementRequest, Clients>) {
+  return {
     settleId: 'connector-example-settleId',
     code: undefined,
     message: 'successfully cancelled',
@@ -82,16 +66,16 @@ export async function settlements(ctx: Context, next: () => Promise<unknown>) {
     value,
     requestId,
   }
-  ctx.body = settlementResponse
-  ctx.status = 200
-  await next()
 }
 
-export async function refunds(ctx: Context, next: () => Promise<unknown>) {
-  const { paymentId, requestId, value } = (await requestParser(
-    ctx.req
-  )) as RefundRequest
-  const refundResponse: RefundResponse = {
+export function refund({
+  connector: {
+    paymentId,
+    requestId,
+    content: { value },
+  },
+}: ConnectorContext<RefundRequest, Clients>): RefundResponse {
+  return {
     refundId: 'connector-example-refundId',
     code: undefined,
     message: 'successfully cancelled',
@@ -99,14 +83,20 @@ export async function refunds(ctx: Context, next: () => Promise<unknown>) {
     requestId,
     value,
   }
-  ctx.body = refundResponse
-  ctx.status = 200
-  await next()
 }
 
-export async function inbound(ctx: Context, next: () => Promise<unknown>) {
-  const requestBody = (await requestParser(ctx.req)) as InboundRequest
-  ctx.body = requestBody
-  ctx.status = 200
-  await next()
+export function inbound({
+  connector: { requestId, paymentId, content },
+}: ConnectorContext<InboundRequest, Clients>): InboundResponse {
+  return {
+    paymentId,
+    code: undefined,
+    message: undefined,
+    requestId,
+    responseData: {
+      content: JSON.stringify(content),
+      contentType: 'application/json',
+      statusCode: 200,
+    },
+  }
 }

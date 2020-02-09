@@ -2,23 +2,21 @@ import {
   Cached,
   ClientsConfig,
   LRUCache,
-  method,
   ParamsContext,
   RecorderState,
-  Service,
   ServiceContext,
 } from '@vtex/api'
 
 import { Clients } from './clients'
 import {
-  authorizations,
-  cancellations,
+  authorize,
+  cancel,
   inbound,
   paymentMethods,
-  refunds,
-  settlements,
+  refund,
+  settle,
 } from './middlewares'
-import { authorize } from './middlewares/authorize'
+import { ConnectorService } from './service'
 
 const TIMEOUT_MS = 800
 
@@ -48,33 +46,16 @@ const clients: ClientsConfig<Clients> = {
   },
 }
 
-// We declare a global Context type just to avoid re-writing ServiceContext<Clients, State> in every handler and resolver
-export interface State extends RecorderState {
-  appKey: string
-  appToken: string
-}
-
-export type Context = ServiceContext<Clients, State>
+export type Context = ServiceContext<Clients>
 // Export a service that defines route handlers and client options.
-export default new Service<Clients, State, ParamsContext>({
+export default new ConnectorService<Clients, RecorderState, ParamsContext>({
   clients,
-  routes: {
-    authorizations: method({
-      POST: [authorize, authorizations],
-      // POST: [authorizations] uncomment if you dont want to check appkey and apptoken
-    }),
-    cancellations: method({
-      POST: [authorize, cancellations],
-    }),
-    settlements: method({
-      POST: [authorize, settlements],
-    }),
-    refunds: method({
-      POST: [authorize, refunds],
-    }),
-    paymentMethods: method({
-      GET: paymentMethods,
-    }),
+  connector: {
+    authorize,
+    cancel,
+    settle,
+    refund,
+    paymentMethods,
     inbound,
   },
 })

@@ -2,6 +2,7 @@
 import {
   Context,
   IOClients,
+  method,
   ParamsContext,
   RecorderState,
   RouteHandler,
@@ -13,13 +14,13 @@ import { json as requestParser } from 'co-body'
 import { omit, pickAll } from 'ramda'
 
 import {
-  AvailablePaymentsResponse,
-  InboundRequest,
-  InboundResponse,
   AuthorizationRequest,
   AuthorizationResponse,
+  AvailablePaymentsResponse,
   CancellationRequest,
   CancellationResponse,
+  InboundRequest,
+  InboundResponse,
   PaymentRequest,
   PaymentResponse,
   RefundRequest,
@@ -30,9 +31,9 @@ import {
 
 type PromiseOrValue<Value> = Promise<Value> | Value
 
-interface ConnectorContext<
-  ClientsT extends IOClients,
-  RequestT extends PaymentRequest
+export interface ConnectorContext<
+  RequestT extends PaymentRequest,
+  ClientsT extends IOClients = IOClients
 > extends Context<ClientsT> {
   connector: {
     appKey: string
@@ -44,13 +45,13 @@ interface ConnectorContext<
   }
 }
 
-type ConnectorHandler<
+export type ConnectorHandler<
   ClientsT extends IOClients,
   RequestT extends PaymentRequest,
   ResponseT extends PaymentResponse
-> = (ctx: ConnectorContext<ClientsT, RequestT>) => PromiseOrValue<ResponseT>
+> = (ctx: ConnectorContext<RequestT, ClientsT>) => PromiseOrValue<ResponseT>
 
-interface ConnectorOptions<ClientsT extends IOClients> {
+export interface ConnectorOptions<ClientsT extends IOClients> {
   authorize: ConnectorHandler<
     ClientsT,
     AuthorizationRequest,
@@ -65,7 +66,7 @@ interface ConnectorOptions<ClientsT extends IOClients> {
   ) => PromiseOrValue<AvailablePaymentsResponse>
 }
 
-interface ConnectorServiceConfig<
+export interface ConnectorServiceConfig<
   ClientsT extends IOClients,
   StateT extends RecorderState,
   CustomT extends ParamsContext
@@ -100,7 +101,7 @@ const buildConnectorContext = async <
   RequestT extends PaymentRequest
 >(
   serviceContext: ServiceContext<ClientsT, StateT, CustomT>
-): Promise<ConnectorContext<ClientsT, RequestT>> => {
+): Promise<ConnectorContext<RequestT, ClientsT>> => {
   const content = (await requestParser(serviceContext.req)) as RequestT
   const vtexContext = pickContext(serviceContext)
   const {
@@ -168,54 +169,74 @@ async function notImplemented(
   await next()
 }
 
+const buildConnectorRoutes = <
+  ClientsT extends IOClients,
+  StateT extends RecorderState,
+  CustomT extends ParamsContext
+>(
+  config: ConnectorServiceConfig<ClientsT, StateT, CustomT>
+) => {
+  const connectorRoutify = <
+    Request extends PaymentRequest,
+    Response extends PaymentResponse
+  >(
+    handler: ConnectorHandler<ClientsT, Request, Response>
+  ): RouteHandler<ClientsT, StateT, CustomT> =>
+    routify<
+      Response,
+      ClientsT,
+      StateT,
+      CustomT,
+      ConnectorContext<Request, ClientsT>
+    >(buildConnectorContext, handler)
+  return {
+    authorizations: method({
+      POST: connectorRoutify<AuthorizationRequest, AuthorizationResponse>(
+        config.connector.authorize
+      ),
+    }),
+    settlements: method({
+      POST: connectorRoutify<SettlementRequest, SettlementResponse>(
+        config.connector.settle
+      ),
+    }),
+    refunds: method({
+      POST: connectorRoutify<RefundRequest, RefundResponse>(
+        config.connector.refund
+      ),
+    }),
+    cancellations: method({
+      POST: connectorRoutify<CancellationRequest, CancellationResponse>(
+        config.connector.cancel
+      ),
+    }),
+    inbound: method({
+      POST: config.connector.inbound
+        ? connectorRoutify(config.connector.inbound)
+        : notImplemented,
+    }),
+    paymentMethods: method({
+      GET: routify<AvailablePaymentsResponse, ClientsT, StateT, CustomT>(
+        pickContext,
+        config.connector.paymentMethods
+      ),
+    }),
+  }
+}
+
 export class ConnectorService<
   ClientsT extends IOClients,
   StateT extends RecorderState,
   CustomT extends ParamsContext
 > extends Service<ClientsT, StateT, CustomT> {
   constructor(config: ConnectorServiceConfig<ClientsT, StateT, CustomT>) {
-    const connectorRoutify = <
-      Request extends PaymentRequest,
-      Response extends PaymentResponse
-    >(
-      handler: ConnectorHandler<ClientsT, Request, Response>
-    ) =>
-      routify<
-        Response,
-        ClientsT,
-        StateT,
-        CustomT,
-        ConnectorContext<ClientsT, Request>
-      >(buildConnectorContext, handler)
     super(
       omit(['connector'], {
         ...config,
         routes: {
-          authorizations: connectorRoutify<
-            AuthorizationRequest,
-            AuthorizationResponse
-          >(config.connector.authorize),
-          settlements: connectorRoutify<SettlementRequest, SettlementResponse>(
-            config.connector.settle
-          ),
-          refunds: connectorRoutify<RefundRequest, RefundResponse>(
-            config.connector.refund
-          ),
-          cancellations: connectorRoutify<
-            CancellationRequest,
-            CancellationResponse
-          >(config.connector.cancel),
-          inbound: config.connector.inbound
-            ? connectorRoutify(config.connector.inbound)
-            : notImplemented,
-          paymentMethods: routify<
-            AvailablePaymentsResponse,
-            ClientsT,
-            StateT,
-            CustomT
-          >(pickContext, config.connector.paymentMethods),
+          ...buildConnectorRoutes(config),
+          ...config.routes,
         },
-        ...config.routes,
       })
     )
   }
