@@ -9,6 +9,7 @@
   "dependencies": {},
   "builders": {
     "node": "6.x",
+    "connector": "0.x",
     "docs": "0.x"
   },
   "scripts": {
@@ -16,13 +17,6 @@
   },
   "credentialType": "absolute",
   "policies": [
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "{{account}}.vtexpayments.com.br",
-        "path": "/api/pvt/payment-provider/*"
-      }
-    },
     {
       "name": "colossus-fire-event"
     },

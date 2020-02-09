@@ -3,31 +3,5 @@
   "ttl": 10,
   "timeout": 2,
   "minReplicas": 2,
-  "maxReplicas": 4,
-  "routes": {
-    "paymentMethods": {
-      "path": "/_v/api/connectors/connector-example/payment-methods",
-      "public": true
-    },
-    "authorizations": {
-      "path": "/_v/api/connectors/connector-example/payments",
-      "public": true
-    },
-    "cancellations": {
-      "path": "/_v/api/connectors/connector-example/payments/:paymentId/cancellations",
-      "public": true
-    },
-    "settlements": {
-      "path": "/_v/api/connectors/connector-example/payments/:paymentId/settlements",
-      "public": true
-    },
-    "refunds": {
-      "path": "/_v/api/connectors/connector-example/payments/:paymentId/refunds",
-      "public": true
-    },
-    "inbound": {
-      "path": "/_v/api/connectors/connector-example/payments/:paymentId/inbound-request/:action",
-      "public": true
-    }
-  }
+  "maxReplicas": 4
 }
