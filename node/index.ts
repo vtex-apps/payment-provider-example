@@ -4,7 +4,6 @@ import {
   LRUCache,
   ParamsContext,
   RecorderState,
-  ServiceContext,
 } from '@vtex/api'
 
 import { Clients } from './clients'
@@ -46,7 +45,6 @@ const clients: ClientsConfig<Clients> = {
   },
 }
 
-export type Context = ServiceContext<Clients>
 // Export a service that defines route handlers and client options.
 export default new ConnectorService<Clients, RecorderState, ParamsContext>({
   clients,

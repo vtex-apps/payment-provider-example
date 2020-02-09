@@ -11,7 +11,7 @@ import {
   ServiceContext,
 } from '@vtex/api'
 import { json as requestParser } from 'co-body'
-import { omit, pickAll } from 'ramda'
+import { identity, omit } from 'ramda'
 
 import {
   AuthorizationRequest,
@@ -31,10 +31,12 @@ import {
 
 type PromiseOrValue<Value> = Promise<Value> | Value
 
-export interface ConnectorContext<
+export type ConnectorContext<
   RequestT extends PaymentRequest,
-  ClientsT extends IOClients = IOClients
-> extends Context<ClientsT> {
+  ClientsT extends IOClients = IOClients,
+  StateT extends RecorderState = RecorderState,
+  CustomT extends ParamsContext = ParamsContext
+> = ServiceContext<ClientsT, StateT, CustomT> & {
   connector: {
     appKey: string
     appToken: string
@@ -45,24 +47,75 @@ export interface ConnectorContext<
   }
 }
 
-export type ConnectorHandler<
-  ClientsT extends IOClients,
-  RequestT extends PaymentRequest,
-  ResponseT extends PaymentResponse
-> = (ctx: ConnectorContext<RequestT, ClientsT>) => PromiseOrValue<ResponseT>
+type ConnectorHandlerImpl<
+  ClientsT extends IOClients = IOClients,
+  StateT extends RecorderState = RecorderState,
+  CustomT extends ParamsContext = ParamsContext,
+  RequestT extends PaymentRequest = PaymentRequest,
+  ResponseT extends PaymentResponse = PaymentResponse
+> = (
+  ctx: ConnectorContext<RequestT, ClientsT, StateT, CustomT>
+) => PromiseOrValue<ResponseT>
 
-export interface ConnectorOptions<ClientsT extends IOClients> {
+export type ConnectorHandler<
+  ClientsT extends IOClients = IOClients,
+  StateT extends RecorderState = RecorderState,
+  CustomT extends ParamsContext = ParamsContext,
+  RequestT extends PaymentRequest = PaymentRequest,
+  ResponseT extends PaymentResponse = PaymentResponse
+> =
+  | ConnectorHandlerImpl<ClientsT, StateT, CustomT, RequestT, ResponseT>
+  | [
+      (
+        | RouteHandler<ClientsT, StateT, CustomT>
+        // tslint:disable-next-line:array-type
+        | Array<RouteHandler<ClientsT, StateT, CustomT>>
+      ),
+      ConnectorHandlerImpl<ClientsT, StateT, CustomT, RequestT, ResponseT>
+    ]
+
+export interface ConnectorOptions<
+  ClientsT extends IOClients = IOClients,
+  StateT extends RecorderState = RecorderState,
+  CustomT extends ParamsContext = ParamsContext
+> {
   authorize: ConnectorHandler<
     ClientsT,
+    StateT,
+    CustomT,
     AuthorizationRequest,
     AuthorizationResponse
   >
-  settle: ConnectorHandler<ClientsT, SettlementRequest, SettlementResponse>
-  refund: ConnectorHandler<ClientsT, RefundRequest, RefundResponse>
-  inbound?: ConnectorHandler<ClientsT, InboundRequest, InboundResponse>
-  cancel: ConnectorHandler<ClientsT, CancellationRequest, CancellationResponse>
+  settle: ConnectorHandler<
+    ClientsT,
+    StateT,
+    CustomT,
+    SettlementRequest,
+    SettlementResponse
+  >
+  refund: ConnectorHandler<
+    ClientsT,
+    StateT,
+    CustomT,
+    RefundRequest,
+    RefundResponse
+  >
+  inbound?: ConnectorHandler<
+    ClientsT,
+    StateT,
+    CustomT,
+    InboundRequest,
+    InboundResponse
+  >
+  cancel: ConnectorHandler<
+    ClientsT,
+    StateT,
+    CustomT,
+    CancellationRequest,
+    CancellationResponse
+  >
   paymentMethods: (
-    ctx: Context<ClientsT>
+    ctx: ServiceContext<ClientsT, StateT, CustomT>
   ) => PromiseOrValue<AvailablePaymentsResponse>
 }
 
@@ -83,17 +136,6 @@ const promisify = async <Value>(
   pOrValue: PromiseOrValue<Value>
 ): Promise<Value> => pOrValue
 
-const pickContext: <ClientsT extends IOClients>(
-  ctx: ServiceContext<ClientsT>
-) => Context<ClientsT> = pickAll([
-  'clients',
-  'vtex',
-  'timings',
-  'metrics',
-  'previousTimerStart',
-  'serverTiming',
-])
-
 const buildConnectorContext = async <
   ClientsT extends IOClients,
   StateT extends RecorderState,
@@ -101,15 +143,14 @@ const buildConnectorContext = async <
   RequestT extends PaymentRequest
 >(
   serviceContext: ServiceContext<ClientsT, StateT, CustomT>
-): Promise<ConnectorContext<RequestT, ClientsT>> => {
+): Promise<ConnectorContext<RequestT, ClientsT, StateT, CustomT>> => {
   const content = (await requestParser(serviceContext.req)) as RequestT
-  const vtexContext = pickContext(serviceContext)
   const {
     'x-provider-api-appkey': providerKey,
     'x-provider-api-apptoken': providerToken,
   } = serviceContext.headers
   return {
-    ...vtexContext,
+    ...serviceContext,
     connector: {
       appKey: providerKey,
       appToken: providerToken,
@@ -141,7 +182,11 @@ const routify = <
   ClientsT extends IOClients = IOClients,
   StateT extends RecorderState = RecorderState,
   CustomT extends ParamsContext = ParamsContext,
-  BuildedContext extends Context<ClientsT> = Context<ClientsT>
+  BuildedContext extends ServiceContext<
+    ClientsT,
+    StateT,
+    CustomT
+  > = ServiceContext<ClientsT, StateT, CustomT>
 >(
   contextBuilder: ContextBuilder<BuildedContext, ClientsT, StateT, CustomT>,
   handler: Handler<Response, BuildedContext, ClientsT>
@@ -169,6 +214,14 @@ async function notImplemented(
   await next()
 }
 
+const isTuple = <First, Second>(
+  tupleOrValue: Second | [First, Second]
+): tupleOrValue is [First, Second] =>
+  (tupleOrValue as [First, Second]).length === 2
+
+const toArray = <Element>(ele: Element | Element[]): Element[] =>
+  Array.isArray(ele) ? ele : [ele]
+
 const buildConnectorRoutes = <
   ClientsT extends IOClients,
   StateT extends RecorderState,
@@ -180,15 +233,21 @@ const buildConnectorRoutes = <
     Request extends PaymentRequest,
     Response extends PaymentResponse
   >(
-    handler: ConnectorHandler<ClientsT, Request, Response>
-  ): RouteHandler<ClientsT, StateT, CustomT> =>
-    routify<
+    handler: ConnectorHandler<ClientsT, StateT, CustomT, Request, Response>
+    // tslint:disable-next-line:array-type
+  ): Array<RouteHandler<ClientsT, StateT, CustomT>> => {
+    const { main, middlewares } = isTuple(handler)
+      ? { middlewares: toArray(handler[0]), main: handler[1] }
+      : { middlewares: [], main: handler }
+    const route = routify<
       Response,
       ClientsT,
       StateT,
       CustomT,
-      ConnectorContext<Request, ClientsT>
-    >(buildConnectorContext, handler)
+      ConnectorContext<Request, ClientsT, StateT, CustomT>
+    >(buildConnectorContext, main)
+    return [...middlewares, route]
+  }
   return {
     authorizations: method({
       POST: connectorRoutify<AuthorizationRequest, AuthorizationResponse>(
@@ -217,7 +276,7 @@ const buildConnectorRoutes = <
     }),
     paymentMethods: method({
       GET: routify<AvailablePaymentsResponse, ClientsT, StateT, CustomT>(
-        pickContext,
+        identity,
         config.connector.paymentMethods
       ),
     }),
