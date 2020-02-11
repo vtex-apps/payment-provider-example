@@ -1,23 +1,20 @@
-import { Context } from '@vtex/api'
-
-import { Clients } from '../clients'
-import { ConnectorContext } from '../service'
 import {
   AuthorizationRequest,
   AuthorizationResponse,
+  AvailablePaymentsResponse,
   CancellationRequest,
   CancellationResponse,
+  ConnectorContext,
   InboundRequest,
-  PaymentMethod,
-  RefundRequest,
-  SettlementRequest,
   InboundResponse,
+  RefundRequest,
   RefundResponse,
-} from '../types'
+  SettlementRequest,
+} from '@vtex/connector-sdk'
 
 export function cancel({
   connector: { transactionId, paymentId, requestId },
-}: ConnectorContext<CancellationRequest, Clients>): CancellationResponse {
+}: ConnectorContext<CancellationRequest>): CancellationResponse {
   return {
     cancellationId: 'connector-example-cancellationId',
     code: undefined,
@@ -28,16 +25,13 @@ export function cancel({
   }
 }
 
-export function paymentMethods(_: Context<Clients>) {
-  const availablePaymentMethods: PaymentMethod[] = []
-  return {
-    paymentMethods: availablePaymentMethods,
-  }
+export const paymentMethods: AvailablePaymentsResponse = {
+  paymentMethods: [],
 }
 
 export function authorize({
   connector: { paymentId },
-}: ConnectorContext<AuthorizationRequest, Clients>): AuthorizationResponse {
+}: ConnectorContext<AuthorizationRequest>): AuthorizationResponse {
   return {
     authorizationId: 'connector-example-authorizationId',
     code: undefined,
@@ -57,7 +51,7 @@ export function settle({
     requestId,
     content: { value },
   },
-}: ConnectorContext<SettlementRequest, Clients>) {
+}: ConnectorContext<SettlementRequest>) {
   return {
     settleId: 'connector-example-settleId',
     code: undefined,
@@ -74,7 +68,7 @@ export function refund({
     requestId,
     content: { value },
   },
-}: ConnectorContext<RefundRequest, Clients>): RefundResponse {
+}: ConnectorContext<RefundRequest>): RefundResponse {
   return {
     refundId: 'connector-example-refundId',
     code: undefined,
@@ -87,7 +81,7 @@ export function refund({
 
 export function inbound({
   connector: { requestId, paymentId, content },
-}: ConnectorContext<InboundRequest, Clients>): InboundResponse {
+}: ConnectorContext<InboundRequest>): InboundResponse {
   return {
     paymentId,
     code: undefined,
