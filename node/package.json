@@ -3,7 +3,8 @@
     "co-body": "^6.0.0",
     "ramda": "^0.27.0",
     "utility-types": "^3.10.0",
-    "typescript-string-enums": "^1.0.0"
+    "typescript-string-enums": "^1.0.0",
+    "@vtex/payment-provider-sdk": "^6.0.0"
   },
   "devDependencies": {
     "@types/co-body": "^0.0.3",

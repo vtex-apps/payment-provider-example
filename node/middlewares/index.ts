@@ -10,7 +10,7 @@ import {
   RefundRequest,
   RefundResponse,
   SettlementRequest,
-} from '../sdk'
+} from '@vtex/payment-provider-sdk'
 
 export function cancel({
   paymentProvider: { transactionId, paymentId, requestId },

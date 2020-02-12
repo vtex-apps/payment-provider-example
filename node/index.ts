@@ -1,3 +1,5 @@
+import { PaymentProviderService } from '@vtex/payment-provider-sdk'
+
 import {
   authorize,
   cancel,
@@ -6,7 +8,6 @@ import {
   refund,
   settle,
 } from './middlewares'
-import { PaymentProviderService } from './sdk'
 
 // Export a service that defines route handlers and client options.
 export default new PaymentProviderService({
