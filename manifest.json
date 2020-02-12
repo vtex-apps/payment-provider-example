@@ -1,15 +1,15 @@
 {
-  "name": "connector-example",
+  "name": "payment-provider-example",
   "vendor": "vtex",
   "version": "0.0.1",
-  "title": "Connector Example",
+  "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "mustUpdateAt": "2018-01-04",
   "categories": [],
   "dependencies": {},
   "builders": {
+    "paymentProvider": "0.x",
     "node": "6.x",
-    "connector": "0.x",
     "docs": "0.x"
   },
   "scripts": {

@@ -1,5 +1,3 @@
-import { ConnectorService } from '@vtex/connector-sdk'
-
 import {
   authorize,
   cancel,
@@ -8,10 +6,11 @@ import {
   refund,
   settle,
 } from './middlewares'
+import { PaymentProviderService } from './sdk'
 
 // Export a service that defines route handlers and client options.
-export default new ConnectorService({
-  connector: {
+export default new PaymentProviderService({
+  paymentProvider: {
     authorize,
     cancel,
     settle,

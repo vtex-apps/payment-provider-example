@@ -4,21 +4,21 @@ import {
   AvailablePaymentsResponse,
   CancellationRequest,
   CancellationResponse,
-  ConnectorContext,
+  PaymentProviderContext,
   InboundRequest,
   InboundResponse,
   RefundRequest,
   RefundResponse,
   SettlementRequest,
-} from '@vtex/connector-sdk'
+} from '../sdk'
 
 export function cancel({
-  connector: { transactionId, paymentId, requestId },
-}: ConnectorContext<CancellationRequest>): CancellationResponse {
+  paymentProvider: { transactionId, paymentId, requestId },
+}: PaymentProviderContext<CancellationRequest>): CancellationResponse {
   return {
-    cancellationId: 'connector-example-cancellationId',
+    cancellationId: 'payment-provider-example-cancellationId',
     code: undefined,
-    message: 'connector cancellation',
+    message: 'payment provider cancellation',
     transactionId,
     paymentId,
     requestId,
@@ -30,15 +30,15 @@ export const paymentMethods: AvailablePaymentsResponse = {
 }
 
 export function authorize({
-  connector: { paymentId },
-}: ConnectorContext<AuthorizationRequest>): AuthorizationResponse {
+  paymentProvider: { paymentId },
+}: PaymentProviderContext<AuthorizationRequest>): AuthorizationResponse {
   return {
-    authorizationId: 'connector-example-authorizationId',
+    authorizationId: 'payment-provider-example-authorizationId',
     code: undefined,
     message: 'successfully cancelled',
     paymentId,
-    tid: 'connector-example-tid',
-    nsu: 'connector-example-nsu',
+    tid: 'payment-provider-example-tid',
+    nsu: 'payment-provider-example-nsu',
     status: 'approved',
     acquirer: undefined,
     paymentAppData: undefined,
@@ -46,14 +46,14 @@ export function authorize({
 }
 
 export function settle({
-  connector: {
+  paymentProvider: {
     paymentId,
     requestId,
     content: { value },
   },
-}: ConnectorContext<SettlementRequest>) {
+}: PaymentProviderContext<SettlementRequest>) {
   return {
-    settleId: 'connector-example-settleId',
+    settleId: 'payment-provider-example-settleId',
     code: undefined,
     message: 'successfully cancelled',
     paymentId,
@@ -63,14 +63,14 @@ export function settle({
 }
 
 export function refund({
-  connector: {
+  paymentProvider: {
     paymentId,
     requestId,
     content: { value },
   },
-}: ConnectorContext<RefundRequest>): RefundResponse {
+}: PaymentProviderContext<RefundRequest>): RefundResponse {
   return {
-    refundId: 'connector-example-refundId',
+    refundId: 'payment-provider-example-refundId',
     code: undefined,
     message: 'successfully cancelled',
     paymentId,
@@ -80,8 +80,8 @@ export function refund({
 }
 
 export function inbound({
-  connector: { requestId, paymentId, content },
-}: ConnectorContext<InboundRequest>): InboundResponse {
+  paymentProvider: { requestId, paymentId, content },
+}: PaymentProviderContext<InboundRequest>): InboundResponse {
   return {
     paymentId,
     code: undefined,

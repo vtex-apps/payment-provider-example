@@ -2,7 +2,7 @@
 
 [Check it](https://github.com/vtex-apps/service-example)
 
-# Connector Example
+# Payment Provider Example
 
 A reference app implementing a [**Payment-Provider protocol**](https://documenter.getpostman.com/view/487146/7LjCQ6a?version=latest).
 

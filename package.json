@@ -1,5 +1,5 @@
 {
-  "name": "connector-example",
+  "name": "payment-provider-example",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

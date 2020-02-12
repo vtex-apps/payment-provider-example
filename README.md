@@ -1,1 +1,1 @@
-# connector-example
+# payment-provider-example
