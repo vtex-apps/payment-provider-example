@@ -1,0 +1,37 @@
+{
+  "memory": 256,
+  "ttl": 10,
+  "timeout": 2,
+  "minReplicas": 2,
+  "maxReplicas": 4,
+  "routes": {
+    "paymentMethods": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payment-methods",
+      "public": true
+    },
+    "authorizations": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments",
+      "public": true
+    },
+    "cancellations": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/cancellations",
+      "public": true
+    },
+    "settlements": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/settlements",
+      "public": true
+    },
+    "refunds": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/refunds",
+      "public": true
+    },
+    "inbound": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/inbound-request/hooks",
+      "public": true
+    },
+    "hooks": {
+      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/hooks",
+      "public": true
+    }
+  }
+}
