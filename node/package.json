@@ -4,10 +4,10 @@
     "ramda": "^0.27.0",
     "utility-types": "^3.10.0",
     "typescript-string-enums": "^1.0.0",
-    "@vtex/payment-provider-sdk": "^6.0.1-beta"
+    "@vtex/payment-provider-sdk": "^6.0.3-beta"
   },
   "devDependencies": {
-    "@vtex/api": "6.16.0",
+    "@vtex/api": "6.13.1",
     "@types/co-body": "^0.0.3",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.0.0",

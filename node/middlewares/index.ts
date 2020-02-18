@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
+import { IncomingHttpHeaders } from 'http2'
+
+import { ServiceContext } from '@vtex/api'
 import {
+  APIContext,
+  APIResponse,
   AuthorizationRequest,
   AuthorizationResponse,
   AvailablePaymentsResponse,
@@ -9,12 +15,18 @@ import {
   InboundRequest,
   InboundResponse,
   isCreditCardAuthorization,
-  PaymentProviderContext,
   RefundRequest,
   RefundResponse,
   SettlementRequest,
 } from '@vtex/payment-provider-sdk'
-import { IOClients } from '@vtex/api'
+
+type PaymentProviderClient = any // IOClients['paymentProvider']
+type PaymentProviderContext<
+  RequestBody = unknown,
+  RouteParams = unknown,
+  QueryParams = unknown,
+  Headers extends IncomingHttpHeaders = IncomingHttpHeaders
+> = APIContext<ServiceContext, RouteParams, RequestBody, QueryParams, Headers>
 
 const RESPONSE_BASE = {
   authorizationId: 'payment-provider-example-authorizationId',
@@ -26,7 +38,9 @@ const RESPONSE_BASE = {
   paymentAppData: undefined,
 }
 export function cancel({
-  paymentProvider: { transactionId, paymentId, requestId },
+  request: {
+    body: { transactionId, paymentId, requestId },
+  },
 }: PaymentProviderContext<CancellationRequest>): CancellationResponse {
   return {
     cancellationId: 'payment-provider-example-cancellationId',
@@ -38,14 +52,16 @@ export function cancel({
   }
 }
 
-export const paymentMethods: AvailablePaymentsResponse = {
-  paymentMethods: ['Visa'],
+export function availablePaymentMethods(): AvailablePaymentsResponse {
+  return {
+    paymentMethods: ['Visa'],
+  }
 }
 
 const callbackWith = (
   status: AuthorizationResponse['status'],
   request: AuthorizationRequest,
-  client: IOClients['paymentProvider']
+  client: PaymentProviderClient
 ) => {
   setTimeout(
     () =>
@@ -70,16 +86,20 @@ const statusByCard: Record<
     return {
       ...RESPONSE_BASE,
       status: 'approved',
-      paymentId: ctx.paymentProvider.paymentId,
+      paymentId: ctx.request.body.paymentId,
     }
   },
-  4444333322221112: async (
-    ctx: PaymentProviderContext<AuthorizationRequest>
-  ): Promise<AuthorizationResponse> => {
+  4444333322221112: async ({
+    request: {
+      body: { paymentId },
+    },
+  }: PaymentProviderContext<AuthorizationRequest>): Promise<
+    AuthorizationResponse
+  > => {
     return {
       ...RESPONSE_BASE,
       status: 'denied',
-      paymentId: ctx.paymentProvider.paymentId,
+      paymentId,
     }
   },
   4222222222222224: async (
@@ -87,13 +107,13 @@ const statusByCard: Record<
   ): Promise<AuthorizationResponse> => {
     callbackWith(
       'approved',
-      ctx.paymentProvider.content,
-      ctx.clients.paymentProvider
+      ctx.request.body,
+      (ctx.clients as any).paymentProvider
     )
     return {
       ...RESPONSE_BASE,
       status: 'undefined',
-      paymentId: ctx.paymentProvider.paymentId,
+      paymentId: ctx.request.body.paymentId,
     }
   },
   4222222222222225: async (
@@ -101,22 +121,22 @@ const statusByCard: Record<
   ): Promise<AuthorizationResponse> => {
     callbackWith(
       'denied',
-      ctx.paymentProvider.content,
-      ctx.clients.paymentProvider
+      ctx.request.body,
+      (ctx.clients as any).paymentProvider
     )
     return {
       ...RESPONSE_BASE,
       status: 'undefined',
-      paymentId: ctx.paymentProvider.paymentId,
+      paymentId: ctx.request.body.paymentId,
     }
   },
 }
 
 export async function authorize(
   ctx: PaymentProviderContext<AuthorizationRequest>
-): Promise<AuthorizationResponse> {
+): Promise<APIResponse<AuthorizationResponse>> {
   const {
-    paymentProvider: { paymentId, content },
+    request: { body: content },
   } = ctx
   if (isCreditCardAuthorization(content)) {
     return statusByCard[+content.card.number](ctx)
@@ -125,7 +145,7 @@ export async function authorize(
     authorizationId: 'payment-provider-example-authorizationId',
     code: undefined,
     message: 'successfully cancelled',
-    paymentId,
+    paymentId: content.paymentId,
     tid: 'payment-provider-example-tid',
     nsu: 'payment-provider-example-nsu',
     status: 'undefined',
@@ -136,10 +156,8 @@ export async function authorize(
 }
 
 export function settle({
-  paymentProvider: {
-    paymentId,
-    requestId,
-    content: { value },
+  request: {
+    body: { paymentId, requestId, value },
   },
 }: PaymentProviderContext<SettlementRequest>) {
   return {
@@ -153,10 +171,8 @@ export function settle({
 }
 
 export function refund({
-  paymentProvider: {
-    paymentId,
-    requestId,
-    content: { value },
+  request: {
+    body: { paymentId, requestId, value },
   },
 }: PaymentProviderContext<RefundRequest>): RefundResponse {
   return {
@@ -170,7 +186,9 @@ export function refund({
 }
 
 export function inbound({
-  paymentProvider: { requestId, paymentId, content },
+  request: {
+    body: { requestId, paymentId, ...content },
+  },
 }: PaymentProviderContext<InboundRequest>): InboundResponse {
   return {
     paymentId,
