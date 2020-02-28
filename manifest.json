@@ -1,0 +1,28 @@
+{
+  "name": "payment-provider-example",
+  "vendor": "vtex",
+  "version": "0.0.1",
+  "title": "Payment Provider Example",
+  "description": "Reference app for Payment-Provider protocol implementers",
+  "mustUpdateAt": "2018-01-04",
+  "categories": [],
+  "dependencies": {},
+  "builders": {
+    "paymentProvider": "0.x",
+    "node": "6.x",
+    "docs": "0.x"
+  },
+  "scripts": {
+    "prereleasy": "bash lint.sh"
+  },
+  "credentialType": "absolute",
+  "policies": [
+    {
+      "name": "colossus-fire-event"
+    },
+    {
+      "name": "colossus-write-logs"
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+}
