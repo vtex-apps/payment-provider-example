@@ -22,7 +22,7 @@ import {
 
 // Export a service that defines route handlers and client options.
 export default new Service<IOClients, RecorderState, ParamsContext>({
-  routes: implementsAPI<PaymentProviderProtocol, ServiceContext>({
+  routes: implementsAPI<PaymentProviderProtocol<ServiceContext>>({
     authorizations: {
       POST: authorize,
     },

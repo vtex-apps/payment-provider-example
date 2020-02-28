@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import { IncomingHttpHeaders } from 'http2'
 
-import { ServiceContext } from '@vtex/api'
+import { IOClients, ServiceContext } from '@vtex/api'
 import {
   APIContext,
   APIResponse,
@@ -20,7 +20,7 @@ import {
   SettlementRequest,
 } from '@vtex/payment-provider-sdk'
 
-type PaymentProviderClient = any // IOClients['paymentProvider']
+type PaymentProviderClient = IOClients['paymentProvider']
 type PaymentProviderContext<
   RequestBody = unknown,
   RouteParams = unknown,
@@ -105,11 +105,7 @@ const statusByCard: Record<
   4222222222222224: async (
     ctx: PaymentProviderContext<AuthorizationRequest>
   ): Promise<AuthorizationResponse> => {
-    callbackWith(
-      'approved',
-      ctx.request.body,
-      (ctx.clients as any).paymentProvider
-    )
+    callbackWith('approved', ctx.request.body, ctx.clients.paymentProvider)
     return {
       ...RESPONSE_BASE,
       status: 'undefined',
@@ -119,11 +115,7 @@ const statusByCard: Record<
   4222222222222225: async (
     ctx: PaymentProviderContext<AuthorizationRequest>
   ): Promise<AuthorizationResponse> => {
-    callbackWith(
-      'denied',
-      ctx.request.body,
-      (ctx.clients as any).paymentProvider
-    )
+    callbackWith('denied', ctx.request.body, ctx.clients.paymentProvider)
     return {
       ...RESPONSE_BASE,
       status: 'undefined',

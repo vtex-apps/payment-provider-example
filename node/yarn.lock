@@ -1349,49 +1349,6 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@vtex/api@6.13.1":
-  version "6.13.1"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.13.1.tgz#2dc7c00e492d3c474667c5fd09dfeb4d4a79fc61"
-  integrity sha512-ZDlH2+297CPIryIomkjMlzinGu7y77g8fQIkkV0jsikNPYhy/QxDpG3eA7wBsxU40meQG6Lb9Rnu/O5wsl3Thw==
-  dependencies:
-    "@types/koa" "^2.11.0"
-    "@types/koa-compose" "^3.2.3"
-    "@wry/equality" "^0.1.9"
-    agentkeepalive "^4.0.2"
-    apollo-server-errors "^2.2.1"
-    archiver "^3.0.0"
-    axios "^0.19.2"
-    axios-retry "^3.1.2"
-    bluebird "^3.5.4"
-    chalk "^2.4.2"
-    co-body "^6.0.0"
-    cookie "^0.3.1"
-    dataloader "^1.4.0"
-    fast-json-stable-stringify "^2.0.0"
-    fs-extra "^7.0.0"
-    graphql "^14.5.8"
-    graphql-tools "^4.0.6"
-    graphql-upload "^8.1.0"
-    js-base64 "^2.5.1"
-    koa "^2.11.0"
-    koa-compose "^4.1.0"
-    koa-compress "^3.0.0"
-    koa-router "^7.4.0"
-    lru-cache "^5.1.1"
-    mime-types "^2.1.12"
-    p-limit "^2.2.0"
-    prom-client "^11.5.3"
-    prometheus-gc-stats "^0.6.2"
-    qs "^6.5.1"
-    querystring "^0.2.0"
-    ramda "^0.26.0"
-    rwlock "^5.0.0"
-    semver "^5.5.1"
-    stats-lite vtex/node-stats-lite#dist
-    tar-fs "^2.0.0"
-    uuid "^3.3.3"
-    xss "^1.0.6"
-
 "@vtex/api@6.15.0":
   version "6.15.0"
   resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.15.0.tgz#cd98d5aba53fdfa643cfba702f0729f8476828f2"
@@ -1435,10 +1392,53 @@
     uuid "^3.3.3"
     xss "^1.0.6"
 
-"@vtex/payment-provider-sdk@^6.0.3-beta":
-  version "6.0.3-beta"
-  resolved "https://registry.yarnpkg.com/@vtex/payment-provider-sdk/-/payment-provider-sdk-6.0.3-beta.tgz#ed1eb85f8f67a9be2f0f3210947038aa6caf5c1e"
-  integrity sha512-DUMBtkoOQfZTqm2a1mRHY9lpbOEwRx2U7rHgKTyJMnpSKx3aTT2ILiHO8TnCBxfyr93bk6k+1+Pl/yBklhJ6Fw==
+"@vtex/api@6.17.0":
+  version "6.17.0"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.17.0.tgz#4498bb1e7a51936fee22d681b5ce47c489cabda0"
+  integrity sha512-CFBkmMbnYGR9RCQoGwTM2mduj/MNXbg/CCzeojAOqepoPE4olNh0mG3X/L25YgJjXrw8d2hyrqrOF2JlE7JhQQ==
+  dependencies:
+    "@types/koa" "^2.11.0"
+    "@types/koa-compose" "^3.2.3"
+    "@wry/equality" "^0.1.9"
+    agentkeepalive "^4.0.2"
+    apollo-server-errors "^2.2.1"
+    archiver "^3.0.0"
+    axios "^0.19.2"
+    axios-retry "^3.1.2"
+    bluebird "^3.5.4"
+    chalk "^2.4.2"
+    co-body "^6.0.0"
+    cookie "^0.3.1"
+    dataloader "^1.4.0"
+    fast-json-stable-stringify "^2.0.0"
+    fs-extra "^7.0.0"
+    graphql "^14.5.8"
+    graphql-tools "^4.0.6"
+    graphql-upload "^8.1.0"
+    js-base64 "^2.5.1"
+    koa "^2.11.0"
+    koa-compose "^4.1.0"
+    koa-compress "^3.0.0"
+    koa-router "^7.4.0"
+    lru-cache "^5.1.1"
+    mime-types "^2.1.12"
+    p-limit "^2.2.0"
+    prom-client "^11.5.3"
+    prometheus-gc-stats "^0.6.2"
+    qs "^6.5.1"
+    querystring "^0.2.0"
+    ramda "^0.26.0"
+    rwlock "^5.0.0"
+    semver "^5.5.1"
+    stats-lite vtex/node-stats-lite#dist
+    tar-fs "^2.0.0"
+    uuid "^3.3.3"
+    xss "^1.0.6"
+
+"@vtex/payment-provider-sdk@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@vtex/payment-provider-sdk/-/payment-provider-sdk-6.0.5.tgz#9c7ce084383205a6ce5e14cb02c58aa1b88ed478"
+  integrity sha512-LZcdN5TC95e1GczBOm4f7ye6mWrdhy+RqImNmD544WadBUrL5jIZsJ8vx1WZ6stBmpNb+xNVH1kePfwBojxYCg==
   dependencies:
     "@vtex/api" "6.15.0"
     ajv "^6.11.0"
@@ -5253,7 +5253,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-stats-lite@vtex/node-stats-lite#dist:
+"stats-lite@github:vtex/node-stats-lite#dist", stats-lite@vtex/node-stats-lite#dist:
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
