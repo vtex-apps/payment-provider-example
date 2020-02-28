@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.2] - 2020-02-28
+
 ### Added
 
 - Bootstrap for creating Payment Provider Connectors on VTEX IO
