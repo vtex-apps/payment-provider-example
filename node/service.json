@@ -4,33 +4,34 @@
   "timeout": 2,
   "minReplicas": 2,
   "maxReplicas": 4,
+  "workers": 1,
   "routes": {
     "paymentMethods": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payment-methods",
+      "path": "/_v/payment-methods",
       "public": true
     },
-    "authorizations": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments",
+    "manifest": {
+      "path": "/_v/manifest",
       "public": true
     },
-    "cancellations": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/cancellations",
+    "authorize": {
+      "path": "/_v/payments",
       "public": true
     },
-    "settlements": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/settlements",
+    "settle": {
+      "path": "/_v/payments/:paymentId/settlements",
       "public": true
     },
-    "refunds": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/refunds",
+    "refund": {
+      "path": "/_v/payments/:paymentId/refunds",
+      "public": true
+    },
+    "cancel": {
+      "path": "/_v/payments/:paymentId/cancellations",
       "public": true
     },
     "inbound": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/payments/:paymentId/inbound-request/hooks",
-      "public": true
-    },
-    "hooks": {
-      "path": "/_v/api/connectors/vtex.payment-provider-example/v0/hooks",
+      "path": "/_v/payments/:paymentId/inbound-request/:action",
       "public": true
     }
   }
