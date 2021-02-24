@@ -1,7 +1,7 @@
 {
   "name": "payment-provider-example",
   "vendor": "vtex",
-  "version": "0.0.2",
+  "version": "0.3.0",
   "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "mustUpdateAt": "2018-01-04",
@@ -22,6 +22,13 @@
     },
     {
       "name": "colossus-write-logs"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "heimdall.vtexpayments.com.br",
+        "path": "/api/payment-provider/callback/*"
+      }
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
