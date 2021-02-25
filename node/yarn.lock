@@ -5713,10 +5713,6 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-"vtex.service-example@https://amb--coinshop.myvtex.com/_v/private/typings/linked/v1/vtex.service-example@0.2.0+build1608561677/public/_types/react":
-  version "0.0.0"
-  resolved "https://amb--coinshop.myvtex.com/_v/private/typings/linked/v1/vtex.service-example@0.2.0+build1608561677/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
-
 w3c-hr-time@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/w3c-hr-time/-/w3c-hr-time-1.0.1.tgz#82ac2bff63d950ea9e3189a58a65625fedf19045"

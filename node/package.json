@@ -12,8 +12,7 @@
     "@types/ramda": "types/npm-ramda#dist",
     "@vtex/api": "6.39.1",
     "@vtex/test-tools": "^1.0.0",
-    "typescript": "3.9.7",
-    "vtex.service-example": "https://amb--coinshop.myvtex.com/_v/private/typings/linked/v1/vtex.service-example@0.2.0+build1608561677/public/_types/react"
+    "typescript": "3.9.7"
   },
   "scripts": {
     "lint": "tsc --noEmit --pretty"
