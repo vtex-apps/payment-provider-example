@@ -81,15 +81,9 @@ export const getAuthorizationCallbackSampleResponse = (
     const response = cardResponses[cardNumber as CardNumber]
 
     if (response === 'accept' || response === 'denied') return undefined
-    if (response === 'async-accept') return approvedSampleResponse(paymentId)
     if (response === 'async-denied') return deniedSampleResponse(paymentId)
 
-    const { returnUrl } = request
-
-    return {
-      ...redirectSampleResponse(paymentId),
-      paymentUrl: returnUrl,
-    }
+    return approvedSampleResponse(paymentId)
   }
 
   return approvedSampleResponse(paymentId)
