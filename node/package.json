@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@vtex/payment-provider": "^1.x",
     "axios": "^0.21.1",
     "co-body": "^6.0.0",
     "ramda": "^0.25.0",
