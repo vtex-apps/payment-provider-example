@@ -1,0 +1,33 @@
+{
+  "name": "TestSuitApprover",
+  "paymentMethods": [
+    {
+      "name": "Visa",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "American Express",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Diners",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Elo",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Hipercard",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Mastercard",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "BankInvoice",
+      "allowsSplit": "onAuthorize"
+    }
+  ]
+}

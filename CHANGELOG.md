@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-02-23
+
+### Changed
+
+- Update Payment Provider SDK version
+
 ## [0.0.2] - 2020-02-28
 
 ### Added
