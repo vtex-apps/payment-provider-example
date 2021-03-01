@@ -17,6 +17,10 @@ import { randomString } from './utils'
 import { executeAuthorization } from './flow'
 
 export default class TestSuiteApprover extends PaymentProvider {
+  // This class needs modifications to pass the test suit.
+  // Refer to https://help.vtex.com/en/tutorial/payment-provider-protocol#4-testing
+  // in order to learn about the protocol and make the according changes.
+
   public async authorize(
     authorization: AuthorizationRequest
   ): Promise<AuthorizationResponse> {
@@ -43,7 +47,7 @@ export default class TestSuiteApprover extends PaymentProvider {
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
     if (this.isTestSuite) {
-      return Refunds.approve(refund, { refundId: randomString() })
+      return Refunds.deny(refund)
     }
 
     throw new Error('Not implemented')
@@ -53,7 +57,7 @@ export default class TestSuiteApprover extends PaymentProvider {
     settlement: SettlementRequest
   ): Promise<SettlementResponse> {
     if (this.isTestSuite) {
-      return Settlements.approve(settlement, { settleId: randomString() })
+      return Settlements.deny(settlement)
     }
 
     throw new Error('Not implemented')
