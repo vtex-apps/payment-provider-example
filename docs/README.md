@@ -457,6 +457,6 @@ The publication process is made via app store, more info on how to do that here:
 
 [Submitting your app in the VTEX app store](https://developers.vtex.com/vtex-developer-docs/docs/vtex-io-documentation-submitting-your-app-in-the-vtex-app-store)
 
-After the homolog step is complete, your app needs to be installed in the `gateewayio` account so that it will appear in the affiliations list. If an account tries to create an affiliation with your connector but does not have it installed, a warning will appear in the admin as such:
+After the homolog step is complete, your app needs to be installed in the account that wants to use it, and after that, a new affiliation will be available to configure it.
 
-![affiliation-warning](https://user-images.githubusercontent.com/27698855/117978635-7a6ce800-b308-11eb-9690-064892af30d6.png)
+The app should be available at `apps.vtex.com`.
