@@ -138,10 +138,6 @@ Next, declare the accepted payment methods, for instance:
 
 By doing this you don't need to declare /manifest or /payment-methods route, it will be implemented automatically by the builder.
 
-Detailed flow [here](https://miro.com/app/board/o9J_kxgli2c=/?moveToWidget=3074457355130162795&cot=14)
-
-![building-a-payment-provider](https://user-images.githubusercontent.com/27698855/116406939-9603c900-a807-11eb-857b-babe02967f95.png)
-
 <br />
 
 ### Overriding Default Routes
@@ -335,8 +331,7 @@ new PaymentProviderService({
 	routes: newRoutes,
 	connector: YourPaymentConnector,
 })
-```![Untitled 3](https://user-images.githubusercontent.com/27698855/117978478-4f829400-b308-11eb-9e11-3a86732060c4.png)
-
+```
 
 If your connector requires any extra clients, you must also pass them in the parameters along with the connector:
 
@@ -391,21 +386,20 @@ export class MyPCICertifiedClient extends SecureExternalClient {
     super('http://my-pci-certified-domain.com', context, options)
   }
 
- public myPCIEndpoint = (cardRequest: CardAuthorization) => {
-
-    return this.http.post(
-		  'my-pci-endpoint',
+  public myPCIEndpoint = (cardRequest: CardAuthorization) => {
+		return this.http.post(
+			'my-pci-endpoint',
       {
-          holder: cardRequest.holderToken,
-          number: cardRequest.numberToken,
-			 		expiration: cardRequest.expiration,
-					csc: cardRequest.cscToken
+				holder: cardRequest.holderToken,
+				number: cardRequest.numberToken,
+			  expiration: cardRequest.expiration,
+	  		csc: cardRequest.cscToken
       },
       {
-        headers: {
-          Authorization: 'my-pci-endpoint-authorization',
+				headers: {
+        	Authorization: 'my-pci-endpoint-authorization',
         },
-        secureProxy: cardRequest.secureProxyUrl,
+				secureProxy: cardRequest.secureProxyUrl,
       } as RequestConfig
     )
   }
