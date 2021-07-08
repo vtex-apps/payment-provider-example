@@ -32,7 +32,11 @@ export default class TestSuiteApprover extends PaymentProvider<Clients> {
       )
     }
 
-    throw new Error('Not implemented')
+    if (isCardAuthorization(authorization)) {
+      await this.context.clients.mockSecureClient.myPCIEndpoint(authorization)
+    }
+
+    return executeAuthorization(authorization, () => {})
   }
 
   public async cancel(
