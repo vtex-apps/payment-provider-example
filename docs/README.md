@@ -349,7 +349,9 @@ new PaymentProviderService({
 
 Those who aren't PCI-certified, could use Secure Proxy to make calls to a PCI-Certified endpoint.
 
-Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint. 
+⚠️***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
+
+⚠️***Important 2: Currently we only accept Content-Type = application/json, any other Content-Type will not be supported by the Secure Proxy.***
 
 In order to make calls over our Secure Proxy, you must:
 
