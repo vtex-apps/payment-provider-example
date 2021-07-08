@@ -4,6 +4,7 @@ import {
   CancellationRequest,
   CancellationResponse,
   Cancellations,
+  isCardAuthorization,
   PaymentProvider,
   RefundRequest,
   RefundResponse,
@@ -15,8 +16,9 @@ import {
 
 import { randomString } from './utils'
 import { executeAuthorization } from './flow'
+import { Clients } from './clients'
 
-export default class TestSuiteApprover extends PaymentProvider {
+export default class TestSuiteApprover extends PaymentProvider<Clients> {
   // This class needs modifications to pass the test suit.
   // Refer to https://help.vtex.com/en/tutorial/payment-provider-protocol#4-testing
   // in order to learn about the protocol and make the according changes.
@@ -41,15 +43,19 @@ export default class TestSuiteApprover extends PaymentProvider {
         cancellationId: randomString(),
       })
     }
+    console.info('hello cancel')
 
     throw new Error('Not implemented')
   }
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
     if (this.isTestSuite) {
-      return Refunds.deny(refund)
+      return Refunds.approve(refund, {
+        refundId: randomString(),
+      })
     }
 
+    console.info('hello refund')
     throw new Error('Not implemented')
   }
 
@@ -57,9 +63,11 @@ export default class TestSuiteApprover extends PaymentProvider {
     settlement: SettlementRequest
   ): Promise<SettlementResponse> {
     if (this.isTestSuite) {
-      return Settlements.deny(settlement)
+      return Settlements.approve(settlement, {
+        settleId: randomString(),
+      })
     }
-
+    console.info('hello settle')
     throw new Error('Not implemented')
   }
 

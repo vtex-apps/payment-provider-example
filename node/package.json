@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@vtex/payment-provider": "^1.0.0",
+    "@vtex/payment-provider": "^1.2.5",
     "axios": "^0.21.1",
     "co-body": "^6.0.0",
     "ramda": "^0.25.0",
@@ -11,13 +11,13 @@
     "@types/jest": "^24.0.18",
     "@types/node": "^12.0.0",
     "@types/ramda": "types/npm-ramda#dist",
-    "@vtex/api": "6.39.1",
+    "@vtex/api": "6.43.0",
     "@vtex/test-tools": "^1.0.0",
-    "typescript": "3.9.7",
-    "vtex.payment-provider-example": "https://amb--coinshop.myvtex.com/_v/private/typings/linked/v1/vtex.payment-provider-example@0.3.0+build1614375977/public/_types/react"
+    "typescript": "3.9.7"
   },
   "scripts": {
-    "lint": "tsc --noEmit --pretty"
+    "lint": "tsc --noEmit --pretty",
+    "relink": "vtex unlink && vtex link"
   },
   "version": "1.0.5"
 }
