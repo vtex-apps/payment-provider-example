@@ -355,7 +355,7 @@ Those who aren't PCI-certified, could use Secure Proxy to make calls to a PCI-Ce
 
 ⚠️***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
 
-⚠️***Important 2: Currently we only accept Content-Type = application/json, any other Content-Type will not be supported by the Secure Proxy.***
+⚠️***Important 2: Currently we only accept two Content-Types: You can use "application/json" or "application/x-www-form-urlencoded", any other Content-Type will not be supported by the Secure Proxy.***
 
 In order to make calls over our Secure Proxy, you must:
 
