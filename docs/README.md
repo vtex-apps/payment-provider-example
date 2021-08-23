@@ -287,6 +287,13 @@ Along with manifest fields (paymentMethods and customFields) there are another c
 - ***usesSecureProxy (**default**: true)***
     - ***true*** - The provider can process payment without being PCI-Certified, the connector will receive a secureProxyUrl on createPayment flow, and the card encrypted data.
     - ***false*** - The provider MUST be a PCI-Certified entity, and we should receive the AoC containing the provided serviceUrl.
+- ***requiresDocument (**default**: false)***
+    - ***true*** - The customer must include the card holder document on checkout. A new field will appear on checkout form.
+    - ***false*** - The customer doesn't need to include card holder document.
+- ***acceptSplitPartialRefund (**default**: false)***
+    - ***true*** - Partial refund will be sent when payment split occurs.
+    - ***false*** - The connector couldn't process partial refund when payment split occurs.
+
 
 
 <br />
