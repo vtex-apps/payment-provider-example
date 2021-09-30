@@ -293,6 +293,10 @@ Along with manifest fields (paymentMethods and customFields) there are another c
 - ***acceptSplitPartialRefund (**default**: false)***
     - ***true*** - Partial refund will be sent when payment split occurs.
     - ***false*** - The connector couldn't process partial refund when payment split occurs.
+- ***usesAutoSettleOptions (**default**: false)***
+    - ***true*** - The client will be able to choose the behaviour of the auto settlement in the VTEX admin configurations of the provider. The options available are the following: Use behavior recommended by the payment processor, Automatic capture immediately after payment authorization, Automatic capture immediately after anti-fraud analysis, Deactivated: Not automatically captured.
+    - ***false*** - The connector won't have this dropdown configuration field for auto settlement.
+   
 
 
 
