@@ -298,16 +298,16 @@ Along with manifest fields (paymentMethods and customFields) there are another c
 
 <br />
 
-### Calling back the Payment Gateway
+### Request a retry from Payment Gateway
 
-An async callback is required in order to develop your connector according to the [protocol](https://help.vtex.com/en/tutorial/payment-provider-protocol), so we built a function, which can be invoked like shown below:
+A retry is required in order to develop your connector according to the [protocol](https://help.vtex.com/en/tutorial/payment-provider-protocol), so we built a function, which can be invoked like shown below:
 
 ```tsx
-this.callback(request, data)
+this.retry(request)
 ```
 
-Where the request is the param you receive in the function and the data is what you want to be sent back.
-
+> Callback flow is replaced by retry flow. Payment Providers implemented using VTEX IO are not able to callback the Payment Gateway with the Payment status updated. Instead, the retry flow allow the connector to ask the Payment Gateway to call create payment route again.
+> The connector should be able to respond approved/denied consistently.
 
 <br />
 
