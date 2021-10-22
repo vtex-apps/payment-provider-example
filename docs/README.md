@@ -308,6 +308,7 @@ this.retry(request)
 
 > Callback flow is replaced by retry flow. Payment Providers implemented using VTEX IO are not able to callback the Payment Gateway with the Payment status updated. Instead, the retry flow allow the connector to ask the Payment Gateway to call create payment route again.
 > The connector should be able to respond approved/denied consistently.
+![image](https://user-images.githubusercontent.com/5839364/138521406-fe3875c1-92ae-4064-aafe-c4c5de56427e.png)
 
 <br />
 
