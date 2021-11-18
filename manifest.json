@@ -1,7 +1,7 @@
 {
   "name": "payment-provider-example",
   "vendor": "vtex",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
