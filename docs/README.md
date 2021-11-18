@@ -38,7 +38,7 @@ In case it's not listed as a devDependency, run the following command on your no
 yarn add -D @vtex/api
 ```
 
-⚠️ Note: If you get any type errors or conflicts in your project related to @vtex/api, follow these steps to resolve the problem: delete the **node_modules** folder and the **yarn.lock** file from both your project root and your project's **node** folder, then run the command **yarn install -f** in both folders.  
+� Note: If you get any type errors or conflicts in your project related to @vtex/api, follow these steps to resolve the problem: delete the **node_modules** folder and the **yarn.lock** file from both your project root and your project's **node** folder, then run the command **yarn install -f** in both folders.  
 
 Lastly, in your ***manifest.json,*** you should check the ***builders*** section, in which you must include the ***paymentProvider*** in it's current version:
 
@@ -361,9 +361,9 @@ new PaymentProviderService({
 
 Those who aren't PCI-certified, could use Secure Proxy to make calls to a PCI-Certified endpoint.
 
-⚠️***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
+�***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
 
-⚠️***Important 2: Currently we only accept two Content-Types: You can use "application/json" or "application/x-www-form-urlencoded", any other Content-Type will not be supported by the Secure Proxy.***
+�***Important 2: Currently we only accept two Content-Types: You can use "application/json" or "application/x-www-form-urlencoded", any other Content-Type will not be supported by the Secure Proxy.***
 
 In order to make calls over our Secure Proxy, you must:
 
@@ -468,3 +468,8 @@ The publication process is made via app store, more info on how to do that here:
 After the homolog step is complete, your app needs to be installed in the account that wants to use it, and after that, a new affiliation will be available to configure it.
 
 The app should be available at `apps.vtex.com`.
+
+
+**Upcoming documentation:**
+
+ - [Add vbase client to persist responses](https://github.com/vtex-apps/payment-provider-example/pull/30)
