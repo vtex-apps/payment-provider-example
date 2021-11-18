@@ -22,7 +22,7 @@ export const flows: Record<
   Flow,
   (
     authorization: AuthorizationRequest,
-    callback: (response: AuthorizationResponse) => void
+    retry: (response: AuthorizationResponse) => void
   ) => AuthorizationResponse
 > = {
   Authorize: request =>
@@ -34,10 +34,10 @@ export const flows: Record<
 
   Denied: request => Authorizations.deny(request, { tid: randomString() }),
 
-  Cancel: (request, callback) => flows.Authorize(request, callback),
+  Cancel: (request, retry) => flows.Authorize(request, retry),
 
-  AsyncApproved: (request, callback) => {
-    callback(
+  AsyncApproved: (request, retry) => {
+    retry(
       Authorizations.approve(request, {
         authorizationId: randomString(),
         nsu: randomString(),
@@ -51,8 +51,8 @@ export const flows: Record<
     })
   },
 
-  AsyncDenied: (request, callback) => {
-    callback(Authorizations.deny(request, { tid: randomString() }))
+  AsyncDenied: (request, retry) => {
+    retry(Authorizations.deny(request, { tid: randomString() }))
 
     return Authorizations.pending(request, {
       delayToCancel: 1000,
@@ -60,8 +60,8 @@ export const flows: Record<
     })
   },
 
-  BankInvoice: (request, callback) => {
-    callback(
+  BankInvoice: (request, retry) => {
+    retry(
       Authorizations.approve(request, {
         authorizationId: randomString(),
         nsu: randomString(),
@@ -76,8 +76,8 @@ export const flows: Record<
     })
   },
 
-  Redirect: (request, callback) => {
-    callback(
+  Redirect: (request, retry) => {
+    retry(
       Authorizations.approve(request, {
         authorizationId: randomString(),
         nsu: randomString(),
@@ -123,9 +123,9 @@ const findFlow = (request: AuthorizationRequest): Flow => {
 
 export const executeAuthorization = (
   request: AuthorizationRequest,
-  callback: (response: AuthorizationResponse) => void
+  retry: (response: AuthorizationResponse) => void
 ): AuthorizationResponse => {
   const flow = findFlow(request)
 
-  return flows[flow](request, callback)
+  return flows[flow](request, retry)
 }
