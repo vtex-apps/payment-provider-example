@@ -38,7 +38,7 @@ In case it's not listed as a devDependency, run the following command on your no
 yarn add -D @vtex/api
 ```
 
-� Note: If you get any type errors or conflicts in your project related to @vtex/api, follow these steps to resolve the problem: delete the **node_modules** folder and the **yarn.lock** file from both your project root and your project's **node** folder, then run the command **yarn install -f** in both folders.  
+  Note: If you get any type errors or conflicts in your project related to @vtex/api, follow these steps to resolve the problem: delete the **node_modules** folder and the **yarn.lock** file from both your project root and your project's **node** folder, then run the command **yarn install -f** in both folders.  
 
 Lastly, in your ***manifest.json,*** you should check the ***builders*** section, in which you must include the ***paymentProvider*** in it's current version:
 
@@ -365,9 +365,9 @@ new PaymentProviderService({
 
 Those who aren't PCI-certified, could use Secure Proxy to make calls to a PCI-Certified endpoint.
 
-�***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
+ ***Important: The endpoint must be allowed by VTEX Secure Proxy by sending the AOC with the wanted endpoint.*** 
 
-�***Important 2: Currently we only accept two Content-Types: You can use "application/json" or "application/x-www-form-urlencoded", any other Content-Type will not be supported by the Secure Proxy.***
+ ***Important 2: Currently we only accept two Content-Types: You can use "application/json" or "application/x-www-form-urlencoded", any other Content-Type will not be supported by the Secure Proxy.***
 
 In order to make calls over our Secure Proxy, you must:
 
@@ -437,7 +437,7 @@ Now that we have a new connector ready to be use, we can test it entirely in the
 
 > <span style="color:red"> ***!! For processing NEW payment methods, their creation must be requested !!***</span>
 
-Ask for this in the `#team-dev-payments` slack channel
+Ask for this in the `#beta-payment-provider-framework-questions` slack channel
 
 A prerequisite for this step is to have products for sale at your store for testing
 
@@ -465,7 +465,7 @@ The format is: `${vendor}-${appName}-${appMajor}`
 
 ## Making your connector available to everyone
 
-⚠️ Important: If you want to make your connector available to all accounts, make sure to have the billing options field in your manifest
+â ï¸ Important: If you want to make your connector available to all accounts, make sure to have the billing options field in your manifest
 
 The publication process is made via app store, more info on how to do that here: 
 
