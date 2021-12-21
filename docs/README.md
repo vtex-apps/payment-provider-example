@@ -461,6 +461,8 @@ The format is: `${vendor}-${appName}-${appMajor}`
 
 ## Making your connector available to everyone
 
+⚠️ Important: If you want to make your connector available to all accounts, make sure to have the billing options field in your manifest
+
 The publication process is made via app store, more info on how to do that here: 
 
 [Submitting your app in the VTEX app store](https://developers.vtex.com/vtex-developer-docs/docs/vtex-io-documentation-submitting-your-app-in-the-vtex-app-store)
