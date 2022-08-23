@@ -1,7 +1,7 @@
 {
   "name": "payment-provider-example-gatewayqa",
   "vendor": "gatewayqa",
-  "version": "0.1.1-paymentapp.0",
+  "version": "0.1.1-paymentapp.1",
   "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
