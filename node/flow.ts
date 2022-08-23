@@ -84,11 +84,13 @@ export const flows: Record<
         tid: randomString(),
       })
     )
-
     return Authorizations.redirect(request, {
-      delayToCancel: 1000,
-      redirectUrl: randomUrl(),
-      tid: randomString(),
+      paymentAppData: {
+        appName:"vtex.challenge-fulfill-form",
+        payload:""
+      },
+      tid: null,
+      delayToCancel: 180000
     })
   },
 }
@@ -118,7 +120,7 @@ const findFlow = (request: AuthorizationRequest): Flow => {
     return cardResponses[cardNumber as CardNumber]
   }
 
-  return 'Authorize'
+  return 'Redirect'
 }
 
 export const executeAuthorization = (
