@@ -286,7 +286,7 @@ Along with manifest fields (paymentMethods and customFields) there are another c
     - The connector name
 - ***usesSecureProxy (**default**: true)***
     - ***true*** - The provider can process payment without being PCI-Certified, the connector will receive a secureProxyUrl on createPayment flow, and the card encrypted data.
-    - ***false*** - The provider MUST be a PCI-Certified entity, and we should receive the AoC containing the provided serviceUrl.
+    - ***false*** - The provider MUST be a PCI-Certified entity, and we should receive the AoC containing the provided serviceUrl. Apps implemented within VTEX IO cannot have the secureProxy disabled, this option only works for a configuration app.
 - ***requiresDocument (**default**: false)***
     - ***true*** - The customer must include the card holder document on checkout. A new field will appear on checkout form.
     - ***false*** - The customer doesn't need to include card holder document.
