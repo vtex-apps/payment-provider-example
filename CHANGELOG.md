@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Included `customFields` option to `configuration.json`
+### Changed
+- Updated README style
 
 ## [1.2.0] - 2021-12-21
 
