@@ -403,7 +403,7 @@ In order to make calls over our Secure Proxy, you must:
 
 Now that we have a new connector ready to be use, we can test it entirely in the production flow 
 using your store's checkout. To submit a request to add an account to test IO connectors, you can use the workflow "**_Allow Account to test_**"
-in the [#provider-review](https://vtex.slack.com/archives/CDT0YFXL2) slack channel.
+in the `#provider-review` slack channel.
 
 > ❗**Attention**: The account **MUST BE ALLOWED** to use IO Connectors! 
 
