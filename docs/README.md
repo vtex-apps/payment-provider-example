@@ -361,8 +361,8 @@ In order to make calls over our Secure Proxy, you must:
       // ...
     }
     ```
-
-2.   Set secure proxy URL on the request that you want to be proxied:
+   
+2. Set secure proxy URL on the request that you want to be proxied:
 
     ```tsx
     import { SecureExternalClient, CardAuthorization } from '@vtex/payment-provider'
@@ -401,13 +401,13 @@ In order to make calls over our Secure Proxy, you must:
 
 ## 🛍️ Placing an Order with your new Connector
 
-Now that we have a new connector ready to be use, we can test it entirely in the production flow using your store's checkout.
+Now that we have a new connector ready to be use, we can test it entirely in the production flow 
+using your store's checkout. To submit a request to add an account to test IO connectors, you can use the workflow "**_Allow Account to test_**"
+in the [#provider-review](https://vtex.slack.com/archives/C92H1JPMJ) slack channel.
 
 > ❗**Attention**: The account **MUST BE ALLOWED** to use IO Connectors! 
 
 > ❗**Attention**: For processing NEW payment methods, their creation must be requested!
-
-Ask for this in the `#beta-payment-provider-framework-questions` slack channel
 
 A prerequisite for this step is to have products for sale at your store for testing
 
