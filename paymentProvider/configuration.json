@@ -1,5 +1,5 @@
 {
-  "name": "TestSuitApprover",
+  "name": "SandboxStripeConnect",
   "paymentMethods": [
     {
       "name": "Visa",

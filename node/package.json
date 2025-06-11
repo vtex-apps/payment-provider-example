@@ -4,6 +4,7 @@
     "axios": "^0.21.1",
     "co-body": "^6.0.0",
     "ramda": "^0.25.0",
+    "stripe": "^18.2.1",
     "typescript-string-enums": "^1.0.0"
   },
   "devDependencies": {
@@ -11,7 +12,7 @@
     "@types/jest": "^24.0.18",
     "@types/node": "^12.0.0",
     "@types/ramda": "types/npm-ramda#dist",
-    "@vtex/api": "6.45.6",
+    "@vtex/api": "6.48.0",
     "@vtex/test-tools": "^1.0.0",
     "typescript": "3.9.7",
     "vtex.payment-provider-example": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.payment-provider-example@1.0.2/public/_types/react"
