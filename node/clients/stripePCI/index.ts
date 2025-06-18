@@ -65,7 +65,7 @@ export interface ThreeDSecureUsage {
 
 export default class StripePCICertifiedClient extends SecureExternalClient {
   constructor(protected context: IOContext, options?: any) {
-    super('http://api.stripe.com', context, {
+    super('https://api.stripe.com', context, {
       ...options,
       timeout: 10000,
       headers: {

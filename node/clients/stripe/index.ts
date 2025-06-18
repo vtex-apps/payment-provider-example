@@ -1,30 +1,108 @@
-import { CardAuthorization, Card } from '@vtex/payment-provider'
-import Stripe from 'stripe'
+import {ExternalClient, IOContext, RequestConfig} from '@vtex/api'
 
-// import stripeClient from '../../libs/stripe'
-import {
-  StripeSDK,
-  PaymentMethods,
-  StripePaymentIntentConfigs,
-  StripePaymentMethodData,
-} from './types'
+import { stringify } from 'qs'
+import {PaymentMethods, StripePaymentIntentConfigs, StripePaymentMethodData} from "./types";
+import Stripe from "stripe";
 
-const stripeSDK: StripeSDK = {
-  createPaymentIntent: async (
-    intentConfigs: StripePaymentIntentConfigs,
-    paymentMethodTypes: PaymentMethods[],
-    confirm: boolean,
-    stripeSecretKey: string,
-    paymentMethodData?: StripePaymentMethodData
-  ) => {
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
+export interface CreatePaymentMethod {
+  id: string
+  object: string
+  billing_details: BillingDetails
+  card: Card
+  created: number
+  customer: null
+  livemode: boolean
+  type: string
+}
+
+export interface BillingDetails {
+  address: Address
+  email: null
+  name: null
+  phone: null
+}
+
+export interface Address {
+  city: null
+  country: null
+  line1: null
+  line2: null
+  postal_code: null
+  state: null
+}
+
+export interface Card {
+  brand: string
+  checks: Checks
+  country: string
+  exp_month: number
+  exp_year: number
+  fingerprint: string
+  funding: string
+  generated_from: null
+  last4: string
+  networks: Networks
+  three_d_secure_usage: ThreeDSecureUsage
+  wallet: null
+}
+
+export interface Checks {
+  address_line1_check: null
+  address_postal_code_check: null
+  cvc_check: string
+}
+
+export interface Networks {
+  available: string[]
+  preferred: null
+}
+
+export interface ThreeDSecureUsage {
+  supported: boolean
+}
+
+export default class StripeClient extends ExternalClient {
+  constructor(protected context: IOContext, options?: any) {
+    super('http://api.stripe.com', context, {
+      ...options,
+      timeout: 10000,
+      headers: {
+        Accept: 'application/x-www-form-urlencoded',
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Vtex-Use-Https': 'true',
       },
     })
+  }
 
+  public updatePaymentIntent = (
+      paymentIntentId: string,
+      paymentMethodId: string,
+      stripeSecretKey: string
+  ) => {
+    console.log('ENTROU NO NOVO UPDATE PAYMENT')
+    return this.http.post<CreatePaymentMethod>(
+        `/v1/payment_intents/${paymentIntentId}/confirm`,
+        stringify({
+          payment_method: paymentMethodId,
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
+
+
+  public createPaymentIntent = (
+      intentConfigs: StripePaymentIntentConfigs,
+      paymentMethodTypes: PaymentMethods[],
+      confirm: boolean,
+      stripeSecretKey: string,
+      paymentMethodData?: StripePaymentMethodData
+  ) => {
+    console.log('ENTROU NO NOVO createPaymentIntent')
     const {
       accountName,
       amount,
@@ -54,124 +132,113 @@ const stripeSDK: StripeSDK = {
     if (paymentMethodData) {
       data.payment_method_data = paymentMethodData
     }
+    
+    return this.http.post<CreatePaymentMethod>(
+        '/v1/payment_intents',
+        stringify({
+          amount: data.amount,
+          currency: data.currency,
+          capture_method: data.captureMethod,
+          transfer_group: data.transferGroup,
+          automatic_payment_methods: { enabled: false}
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
 
-    const intent = await stripe.paymentIntents.create(data)
 
-    return intent
-  },
-
-  updatePaymentIntent: async (
-    paymentIntentId: string,
-    paymentMethodId: string,
-    stripeSecretKey: string
+  public retrievePaymentTransfers =  (stripeSecretKey: string
   ) => {
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
-      },
-    })
+    return this.http.get(
+        '/v1/payment_intents',
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
 
-    const intent = await stripe.paymentIntents.update(paymentIntentId, {
-      payment_method: paymentMethodId,
-    })
 
-    return intent
-  },
-  refundPaymentIntent: async (
-    paymentIntentId: string,
-    value: number,
-    stripeSecretKey: string
+  public createReversalTransfer = (amount : number, id: string, stripeSecretKey: string
   ) => {
-    const valueToRefundInCents = value * 100
 
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
-      },
-    })
-
-    const paymentRefundend = await stripe.refunds.create({
-      payment_intent: paymentIntentId,
-      amount: valueToRefundInCents,
-    })
-
-    return paymentRefundend
-  },
-  createPaymentMethods: async (
-    cardRequest: CardAuthorization & {
-      card: Card
-    },
-    metadata: any,
-    stripeSecretKey: string
-  ) => {
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
-      },
-    })
-
-    const data: any = {
-      type: 'card',
-      metadata: { ...metadata },
-      card: {
-        exp_month: cardRequest.card.expiration.month,
-        exp_year: cardRequest.card.expiration.year,
-        number: cardRequest.card.number,
-        cvc: cardRequest.card.csc,
-      },
+    const data : any = {
+      amount
     }
 
-    const intent = await stripe.paymentMethods.create(data)
+    return this.http.post(
+        `/v1/transfers/${id}/reversals`,
+        stringify({
+          amount: data.amount
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
 
-    return intent
-  },
-  retrievePaymentTransfers: async (
-    transferGroup: string,
-    stripeSecretKey: string
+  public refundPaymentIntent = (
+      paymentIntentId: string,
+      value: number,
+      stripeSecretKey: string
   ) => {
-    const data: any = {
-      transferGroup,
-    }
-
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
-      },
-    })
-
-    const transfers = await stripe.transfers.list(data)
-
-    return transfers
-  },
-  createReversalTransfer: async (
-    amount: number,
-    id: string,
-    stripeSecretKey: string
+    console.log('refundPaymentIntent: ')
+    console.log(paymentIntentId)
+    
+    return this.http.post<Stripe.Refund>(
+        '/v1/refunds',
+        stringify({
+          //charge: 'ch_3Rab1hCp13eGpuNm0WFf1GDF',
+          payment_intent: paymentIntentId,
+          amount: value
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
+  public capturePaymentIntent = (
+      paymentIntentId: string,
+      stripeSecretKey: string
   ) => {
-    const data: any = {
-      amount,
-    }
+    console.log('capturePaymentIntent: ')
+    console.log(paymentIntentId)
 
-    const stripe = new Stripe(stripeSecretKey, {
-      appInfo: {
-        name: 'Stripe Official VTEX',
-        version: '1',
-        url: 'https://www.stripe.com/partners/vtex',
-      },
-    })
+    return this.http.post<Stripe.Refund>(
+        `/v1/payment_intents/${paymentIntentId}/capture`,null,
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
 
-    const transfer = await stripe.transfers.createReversal(id, data)
 
-    return transfer
-  },
+  public cancelPaymentIntent = (
+      paymentIntentId: string,
+      stripeSecretKey: string
+  ) => {
+    console.log('cancelPaymentIntent: ')
+    console.log(paymentIntentId)
+
+    return this.http.post(
+        `/v1/payment_intents/${paymentIntentId}/cancel`,null,
+        {
+          headers: {
+            Authorization: `Bearer ${stripeSecretKey}`,
+          }
+        } as RequestConfig
+    )
+  }
+
 }
-
-export default stripeSDK

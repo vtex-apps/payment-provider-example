@@ -1,7 +1,7 @@
 {
-  "name": "PaymentProviderOnboardingMiguel",
-  "vendor": "vtex",
-  "version": "1.2.0",
+  "name": "payment-provider-onboarding-miguel",
+  "vendor": "teampaymentsintegrations",
+  "version": "0.0.1",
   "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
@@ -22,8 +22,29 @@
     {
       "name": "outbound-access",
       "attrs": {
+        "host": "api.stripe.com",
+        "path": "/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
         "host": "heimdall.vtexpayments.com.br",
         "path": "/api/payment-provider/callback/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "heimdall.vtexpayments.com.br",
+        "path": "/api/payment-provider/callback/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexpayments.com.br",
+        "path": "/*"
       }
     }
   ],
