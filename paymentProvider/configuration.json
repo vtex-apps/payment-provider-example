@@ -1,5 +1,6 @@
 {
-  "name": "TestSuitApprover",
+  "name": "PalomaConnector",
+  "serviceUrl": "/_v/api/paloma-connector",
   "paymentMethods": [
     {
       "name": "Visa",

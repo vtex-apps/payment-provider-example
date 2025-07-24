@@ -1,8 +1,8 @@
 {
-  "name": "payment-provider-example",
+  "name": "payment-provider-paloma",
   "vendor": "vtex",
   "version": "1.2.0",
-  "title": "Payment Provider Example",
+  "title": "Payment Provider Paloma",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
     "paymentProvider": "1.x",
@@ -25,7 +25,17 @@
         "host": "heimdall.vtexpayments.com.br",
         "path": "/api/payment-provider/callback/*"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "https://api.stripe.com",
+        "path": "*"
+      }
     }
   ],
+  "billingOptions": {
+    "type": "free"
+  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

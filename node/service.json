@@ -1,0 +1,30 @@
+{
+  "memory": 4096,
+  "ttl": 60,
+  "timeout": 60,
+  "minReplicas": 4,
+  "maxReplicas": 30,
+  "cpu": {
+    "type": "shared",
+    "value": 10
+  },
+ "clients": "./node/clients",
+  "routes": {
+    "authorize": {
+      "path": "/payments",
+      "public": true
+    },
+    "cancel": {
+      "path": "/payments/:paymentId/cancellations",
+      "public": true
+    },
+    "settle": {
+      "path": "/payments/:paymentId/settlements",
+      "public": true
+    },
+    "refund": {
+      "path": "/payments/:paymentId/refunds",
+      "public": true
+    }
+  }
+}

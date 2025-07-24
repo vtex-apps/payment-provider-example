@@ -5,6 +5,7 @@ import {
   CancellationResponse,
   Cancellations,
   PaymentProvider,
+  PaymentProviderState,
   RefundRequest,
   RefundResponse,
   Refunds,
@@ -12,12 +13,15 @@ import {
   SettlementResponse,
   Settlements,
 } from '@vtex/payment-provider'
-import { VBase } from '@vtex/api'
+import { ParamsContext, VBase } from '@vtex/api'
 
 import { randomString } from './utils'
 import { executeAuthorization } from './flow'
+import StripeMapper from './clients/mappers/StripeMapper';
+import { Clients } from './clients';
+import type { PaymentRequest } from '@vtex/payment-provider/lib/service/typings/api'
 
-const authorizationsBucket = 'authorizations'
+const authorizationsBucket = 'authorizations';
 const persistAuthorizationResponse = async (
   vbase: VBase,
   resp: AuthorizationResponse
@@ -33,10 +37,14 @@ const getPersistedAuthorizationResponse = async (
     true
   )
 
-export default class TestSuiteApprover extends PaymentProvider {
+export default class PalomaConnector extends PaymentProvider<Clients, PaymentProviderState<PaymentRequest>, ParamsContext> {
   // This class needs modifications to pass the test suit.
   // Refer to https://help.vtex.com/en/tutorial/payment-provider-protocol#4-testing
   // in order to learn about the protocol and make the according changes.
+
+  constructor(context: Context) {
+    super(context)
+  }
 
   private async saveAndRetry(
     req: AuthorizationRequest,
@@ -48,7 +56,10 @@ export default class TestSuiteApprover extends PaymentProvider {
 
   public async authorize(
     authorization: AuthorizationRequest
-  ): Promise<AuthorizationResponse> {
+    // ): Promise<AuthorizationResponse> {
+  ): Promise<any> {
+    const stripeClient = this.context.clients.stripe;
+
     if (this.isTestSuite) {
       const persistedResponse = await getPersistedAuthorizationResponse(
         this.context.clients.vbase,
@@ -64,7 +75,18 @@ export default class TestSuiteApprover extends PaymentProvider {
       )
     }
 
-    throw new Error('Not implemented')
+    const paymentMethodPayload = StripeMapper.getPaymentMethodPayload(authorization);
+    await stripeClient.paymentMethods(paymentMethodPayload, this.context);
+
+    const createPaymentIntentPayload = StripeMapper.getPaymentIntentPayload(authorization);
+    console.log('createPaymentIntentPayload --->', createPaymentIntentPayload);
+    const createPaymentIntentResponse = await stripeClient.paymentIntents(createPaymentIntentPayload);
+    console.log('createPaymentIntentResponse --->', createPaymentIntentResponse);
+
+    const paymentConfirmPayload = StripeMapper.getConfirmPaymentIntentPayload(createPaymentIntentResponse.id);
+    console.log('paymentConfirmPayload --->', paymentConfirmPayload);
+    const paymentConfirmResponse = stripeClient.confirmPayment(paymentConfirmPayload, createPaymentIntentResponse.id);
+    console.log('paymentConfirmResponse --->', paymentConfirmResponse);
   }
 
   public async cancel(
