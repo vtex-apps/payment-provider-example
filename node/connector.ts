@@ -19,7 +19,9 @@ import { randomString } from './utils'
 import { executeAuthorization } from './flow'
 import StripeMapper from './clients/mappers/StripeMapper';
 import { Clients } from './clients';
-import type { PaymentRequest } from '@vtex/payment-provider/lib/service/typings/api'
+import type { CreditCardAuthorization, PaymentRequest } from '@vtex/payment-provider/lib/service/typings/api'
+import { AxiosError } from 'axios';
+import { ConfirmPaymentIntentResponseDto } from './clients/dtos/ConfirmPaymentIntentResponseDto';
 
 const authorizationsBucket = 'authorizations';
 const persistAuthorizationResponse = async (
@@ -56,9 +58,9 @@ export default class PalomaConnector extends PaymentProvider<Clients, PaymentPro
 
   public async authorize(
     authorization: AuthorizationRequest
-    // ): Promise<AuthorizationResponse> {
-  ): Promise<any> {
-    const stripeClient = this.context.clients.stripe;
+  ): Promise<AuthorizationResponse> {
+    const { clients: { stripe: stripeClient, stripePCI: stripePCIClient }, headers } = this.context;
+    const apiSecret = headers['x-provider-api-apptoken'] as string;
 
     if (this.isTestSuite) {
       const persistedResponse = await getPersistedAuthorizationResponse(
@@ -75,18 +77,30 @@ export default class PalomaConnector extends PaymentProvider<Clients, PaymentPro
       )
     }
 
-    const paymentMethodPayload = StripeMapper.getPaymentMethodPayload(authorization);
-    await stripeClient.paymentMethods(paymentMethodPayload, this.context);
 
-    const createPaymentIntentPayload = StripeMapper.getPaymentIntentPayload(authorization);
-    console.log('createPaymentIntentPayload --->', createPaymentIntentPayload);
-    const createPaymentIntentResponse = await stripeClient.paymentIntents(createPaymentIntentPayload);
-    console.log('createPaymentIntentResponse --->', createPaymentIntentResponse);
+    let paymentConfirmResponse : ConfirmPaymentIntentResponseDto | null = null;
+    try {
+      const paymentMethodPayload = StripeMapper.getPaymentMethodPayload(authorization);
+      const paymentMethodResponse = await stripePCIClient.paymentMethods(paymentMethodPayload, (authorization as CreditCardAuthorization).secureProxyUrl as string, apiSecret);
 
-    const paymentConfirmPayload = StripeMapper.getConfirmPaymentIntentPayload(createPaymentIntentResponse.id);
-    console.log('paymentConfirmPayload --->', paymentConfirmPayload);
-    const paymentConfirmResponse = stripeClient.confirmPayment(paymentConfirmPayload, createPaymentIntentResponse.id);
-    console.log('paymentConfirmResponse --->', paymentConfirmResponse);
+      const createPaymentIntentPayload = StripeMapper.getPaymentIntentPayload(authorization);
+      const createPaymentIntentResponse = await stripeClient.paymentIntents(createPaymentIntentPayload, apiSecret);
+
+      const paymentIntentConfirmPayload = StripeMapper.getConfirmPaymentIntentPayload(paymentMethodResponse.id);
+      paymentConfirmResponse = await stripeClient.confirmPayment(paymentIntentConfirmPayload, createPaymentIntentResponse.id, apiSecret);
+    } catch (error) {
+      const exception = error as AxiosError;
+      return {
+        paymentId: authorization.paymentId,
+        status: 'denied',
+        message: exception.message
+      } as AuthorizationResponse;
+    }
+
+    return {
+      paymentId: authorization.paymentId,
+      status: paymentConfirmResponse.status === 'requires_capture' ? 'approved' : 'denied',
+    } as AuthorizationResponse;
   }
 
   public async cancel(
@@ -98,7 +112,18 @@ export default class PalomaConnector extends PaymentProvider<Clients, PaymentPro
       })
     }
 
-    throw new Error('Not implemented')
+    const { clients: { stripe: stripeClient }, headers } = this.context;
+    const apiKey = headers['x-provider-api-apptoken'] as string;
+
+    const { success, data: cancellationResponse, errorMessage } = await stripeClient.cancelIntent(cancellation.paymentId as string, apiKey);
+    const cancelResponse = {
+      paymentId: cancellation.paymentId,
+      cancellationId: success ? cancellationResponse?.id ?? null : null,
+      code: success ? 'canceled' : (cancellationResponse as any).code ?? null,
+      message: success ? 'canceled' : errorMessage,
+    } as CancellationResponse;
+
+    return cancelResponse;
   }
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
@@ -110,13 +135,26 @@ export default class PalomaConnector extends PaymentProvider<Clients, PaymentPro
   }
 
   public async settle(
-    settlement: SettlementRequest
+    settlement: SettlementRequest,
   ): Promise<SettlementResponse> {
+
     if (this.isTestSuite) {
       return Settlements.deny(settlement)
     }
+    const { clients: { stripe: stripeClient }, headers } = this.context;
+    const apiKey = headers['x-provider-api-apptoken'] as string;
 
-    throw new Error('Not implemented')
+    const confirmationResponse = await stripeClient.captureIntent(settlement.paymentId as string, apiKey);
+
+    return {
+      settleId: confirmationResponse.id,
+      value: confirmationResponse.amount,
+      code: null,
+      requestId: settlement.requestId,
+      name: '',
+      message: '',
+      paymentId: settlement.paymentId,
+    } as SettlementResponse;
   }
 
   public inbound: undefined

@@ -5,17 +5,17 @@ import parseRawBody from "./middlewares/parseBody";
 const connectorMiddleware = new ConnectorMiddleware();
 
 const routes = {
-	payments: method({
-		POST: [parseRawBody, connectorMiddleware.payments],
+	authorize: method({
+		POST: [parseRawBody, connectorMiddleware.authorize],
 	}),
-	cancellations: method({
-		POST: [parseRawBody, connectorMiddleware.cancellations],
+	cancel: method({
+		POST: [parseRawBody, connectorMiddleware.cancel],
 	}),
-	settlements: method({
-		POST: [parseRawBody, connectorMiddleware.settlements],
+	settle: method({
+		POST: [parseRawBody, connectorMiddleware.settle],
 	}),
-	refunds: method({
-		POST: [parseRawBody, connectorMiddleware.refunds],
+	refund: method({
+		POST: [parseRawBody, connectorMiddleware.refund],
 	}),
 };
 

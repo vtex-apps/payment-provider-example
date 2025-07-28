@@ -1,6 +1,6 @@
 import { ClientsConfig, IOClients, LRUCache } from '@vtex/api'
-import Stripe from './stripe'
-import SecureProxy from './secureProxy'
+import StripeClient from './stripe'
+import StripePCIClient from './stripePCI'
 
 const appsCache = new LRUCache<string, any>({ max: 200 })
 const providerManagerCache = new LRUCache<string, any>({ max: 1, ttl: 2 * 60 * 1000 })
@@ -11,11 +11,11 @@ const DEFAULT_TIMEOUT_MS = 3000
 
 export class Clients extends IOClients {
   public get stripe() {
-    return this.getOrSet('stripe', Stripe)
+    return this.getOrSet('stripe', StripeClient)
   }
 
-  public get secureProxy() {
-    return this.getOrSet('secureProxy', SecureProxy)
+  public get stripePCI() {
+    return this.getOrSet('stripePCI', StripePCIClient)
   }
 }
 
