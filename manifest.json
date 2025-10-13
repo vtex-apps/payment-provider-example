@@ -1,7 +1,7 @@
 {
   "name": "payment-provider-paloma",
   "vendor": "vtex",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Payment Provider Paloma",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
