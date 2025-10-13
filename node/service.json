@@ -8,7 +8,7 @@
     "type": "shared",
     "value": 10
   },
- "clients": "./node/clients",
+  "clients": "./node/clients",
   "routes": {
     "authorize": {
       "path": "/payments",

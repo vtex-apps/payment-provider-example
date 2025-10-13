@@ -1,6 +1,5 @@
 {
-  "name": "PalomaConnector",
-  "serviceUrl": "/_v/api/paloma-connector",
+  "name": "PalomaAnotherConnector",
   "paymentMethods": [
     {
       "name": "Visa",
@@ -31,6 +30,11 @@
       "allowsSplit": "onAuthorize"
     }
   ],
+  "usesAutoSettleOptions": true,
+  "autoSettleDelay": {
+    "minimum": "0",
+    "maximum": "2"
+  },
   "customFields": [
     {
       "name": "Client ID",

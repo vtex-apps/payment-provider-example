@@ -1,9 +1,13 @@
 import { ClientsConfig, IOClients, LRUCache } from '@vtex/api'
+
 import StripeClient from './stripe'
 import StripePCIClient from './stripePCI'
 
 const appsCache = new LRUCache<string, any>({ max: 200 })
-const providerManagerCache = new LRUCache<string, any>({ max: 1, ttl: 2 * 60 * 1000 })
+const providerManagerCache = new LRUCache<string, any>({
+  max: 1,
+  ttl: 2 * 60 * 1000,
+})
 
 metrics.trackCache('apps', appsCache)
 
