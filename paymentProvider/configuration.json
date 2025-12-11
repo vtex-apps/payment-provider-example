@@ -1,13 +1,17 @@
 {
-  "name": "PalomaAnotherConnector",
+  "name": "ConnectorPalomaTest",
   "paymentMethods": [
     {
       "name": "Visa",
       "allowsSplit": "onCapture"
     },
     {
-      "name": "American Express",
+      "name": "Mastercard",
       "allowsSplit": "onCapture"
+    },
+    {
+      "name": "American Express",
+      "allowsSplit": "onAuthorize"
     },
     {
       "name": "Diners",
@@ -19,14 +23,58 @@
     },
     {
       "name": "Hipercard",
-      "allowsSplit": "onCapture"
+      "allowsSplit": "disabled"
     },
     {
-      "name": "Mastercard",
-      "allowsSplit": "onCapture"
+      "name": "Visa Electron",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Maestro",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Mastercard Debit",
+      "allowsSplit": "disabled"
     },
     {
       "name": "BankInvoice",
+      "allowsSplit": "onAuthorize"
+    },
+    {
+      "name": "Promissories",
+      "allowsSplit": "onAuthorize"
+    },
+    {
+      "name": "Privatelabels",
+      "allowsSplit": "onAuthorize"
+    },
+    {
+      "name": "Cobranded",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "PicPay",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Cash",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Pix",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Alelo",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "PalomaMethod",
+      "allowsSplit": "onAuthorize"
+    },
+    {
+      "name": "PalomaMethod2",
       "allowsSplit": "onAuthorize"
     }
   ],
