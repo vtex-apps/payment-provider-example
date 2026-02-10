@@ -1,57 +1,10 @@
 {
-  "name": "TestSuitApprover",
+  "name": "UcpPaymentProviderMock",
   "paymentMethods": [
     {
-      "name": "Visa",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "American Express",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "Diners",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "Elo",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "Hipercard",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "Mastercard",
-      "allowsSplit": "onCapture"
-    },
-    {
-      "name": "BankInvoice",
-      "allowsSplit": "onAuthorize"
+      "name": "Google Pay",
+      "allowsSplit": "disabled"
     }
   ],
-  "customFields": [
-    {
-      "name": "Client ID",
-      "type": "text"
-    },
-    {
-      "name": "Secret Token",
-      "type": "password"
-    },
-    {
-      "name": "Currency",
-      "type": "select",
-      "options": [
-        {
-          "text": "BRL",
-          "value": "1"
-        },
-        {
-          "text": "USD",
-          "value": "2"
-        }
-      ]
-    }
-  ]
+  "customFields": []
 }
